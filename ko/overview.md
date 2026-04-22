@@ -1,4 +1,4 @@
-# Network > Load Balancer(DSR) > 개요
+## Network > Load Balancer(DSR) > 개요
 
 NHN Cloud는 DSR(Direct Server Return) 방식의 로드 밸런서를 제공합니다. 로드 밸런서(DSR)를 이용하면,
 
