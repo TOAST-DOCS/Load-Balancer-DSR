@@ -66,7 +66,7 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
 
 > [주의] 멤버 서버 측 설정 필요<br>
 > 멤버 인스턴스가 VIP로 오는 트래픽을 정상적으로 수신·응답하려면 서버 내부에서 다음 설정이 필요합니다.
-> - 네트워크 인터페이스에 **VIP를 추가 허용 주소(Allowed Address Pair)로 추가** (콘솔 Network Interface 메뉴)
+> - 네트워크 인터페이스에 **VIP를 추가 허용 주소로 추가** (콘솔 Network Interface 메뉴)
 > - 커널 파라미터 설정 (`arp_ignore=1`, `arp_announce=2`)
 > - lo 인터페이스에 VIP를 `/32` 서브넷으로 추가
 > - Security Group에서 서비스 포트 및 헬스 체크 트래픽 허용
@@ -177,7 +177,7 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
 > * 하나의 로드 밸런서(DSR)에는 기본적으로 최대 30개의 멤버를 등록할 수 있습니다.
 
 > [참고] 멤버 서버 측 설정<br>
-> 멤버 등록 후 트래픽을 정상적으로 수신하려면, 네트워크 인터페이스에 **VIP를 추가 허용 주소(Allowed Address Pair)로 추가**하고, 멤버 서버 내부에서 ARP 커널 파라미터 설정, lo 인터페이스에 VIP 추가, Security Group 규칙 설정이 필요합니다. 자세한 절차는 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer%20(DSR)/ko/overview/)의 멤버 서버 설정 가이드를 참고하시기 바랍니다.
+> 멤버 등록 후 트래픽을 정상적으로 수신하려면, 네트워크 인터페이스에 **VIP를 추가 허용 주소로 추가**하고, 멤버 서버 내부에서 ARP 커널 파라미터 설정, lo 인터페이스에 VIP 추가, Security Group 규칙 설정이 필요합니다. 자세한 절차는 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer%20(DSR)/ko/overview/)의 멤버 서버 설정 가이드를 참고하시기 바랍니다.
 
 <a id='delete-dsr-members'></a>
 ### 멤버 삭제
