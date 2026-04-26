@@ -405,7 +405,7 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
 * **설정 위치:** 콘솔의 **Network > Network Interface** 메뉴에서 해당 인터페이스 선택 후 **추가 허용 주소** 항목에 VIP 주소(`<VIP>/32`)를 추가합니다.
 * 하나의 인스턴스가 여러 로드 밸런서(DSR)의 멤버인 경우, **각 VIP를 모두** 추가 허용 주소에 추가해야 합니다.
 
-> [참고] 추가 허용 주소 설정에 대한 자세한 절차는 [콘솔 사용 가이드](/Network%20Interface/ko/console-guide/)를 참조하세요.
+> [참고] 추가 허용 주소 설정에 대한 자세한 절차는 [콘솔 사용 가이드](/Network/Network%20Interface/ko/console-guide/)를 참조하세요.
 
 
 ## Floating IP 연결
