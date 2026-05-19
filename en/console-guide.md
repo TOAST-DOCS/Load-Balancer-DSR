@@ -22,10 +22,10 @@ Configure the basic information for Load Balancer (DSR). The required items are 
   * Manual assign: A desired IP within the CIDR range of the subnet is entered directly and used as the VIP.
 
 !!! danger "Caution"
-If the manually specified VIP address is not within the CIDR range of the subnet, creation will fail. Make sure to specify an IP within the IP range of the subnet.
+    If the manually specified VIP address is not within the CIDR range of the subnet, creation will fail. Make sure to specify an IP within the IP range of the subnet.
 
 !!! tip "Note"
-Load Balancer (DSR) operates at the TCP/UDP L4 level, and server response traffic does not pass through the load balancer. Therefore, unlike a standard load balancer, L7 features such as HTTP header-based routing, SSL offloading, and the listener/member group concept are not provided.
+    Load Balancer (DSR) operates at the TCP/UDP L4 level, and server response traffic does not pass through the load balancer. Therefore, unlike a standard load balancer, L7 features such as HTTP header-based routing, SSL offloading, and the listener/member group concept are not provided.
 
 #### 2. Health Check Settings
 
@@ -54,10 +54,10 @@ Configure the following additional items for each protocol:
 * Expected HTTP response code: Enter the HTTP response code to be considered a normal response. The default value is `200`.
 
 !!! danger "Caution"
-The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
+    The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
 
 !!! tip "Note"
-TCP/HTTP health checks send requests to the DSR VIP as the destination, if the VIP is not configured on the lo interface of the member server, the packets cannot be received or processed, causing the health check to fail and the member to be marked as `INACTIVE`. ICMP health checks send requests to the actual IP of the member, so they only verify connectivity regardless of the VIP configuration.
+    TCP/HTTP health checks send requests to the DSR VIP as the destination, if the VIP is not configured on the lo interface of the member server, the packets cannot be received or processed, causing the health check to fail and the member to be marked as `INACTIVE`. ICMP health checks send requests to the actual IP of the member, so they only verify connectivity regardless of the VIP configuration.
 
 #### 3. Member Settings
 
@@ -66,20 +66,20 @@ Specify the member instances to register when creating Load Balancer (DSR). Memb
 * Select instance: Select the instance (network interface) that belongs to the same subnet as Load Balancer (DSR). One or more instances can be selected simultaneously and registered as members.
 
 !!! tip "Note"
-Load Balancer (DSR) forwards client requests to member instances while preserving the destination port of the client request (VIP port). Therefore, unlike a standard load balancer, the service port is not specified per member when registering members; only the network interface of the member instance is selected. The application on the member server must be bound to `0.0.0.0` or the VIP and listen on the same port that the client sends requests to.
+    Load Balancer (DSR) forwards client requests to member instances while preserving the destination port of the client request (VIP port). Therefore, unlike a standard load balancer, the service port is not specified per member when registering members; only the network interface of the member instance is selected. The application on the member server must be bound to `0.0.0.0` or the VIP and listen on the same port that the client sends requests to.
 
 !!! danger "Caution"
-For a member instance to properly receive and respond to traffic arriving at the VIP, the following configurations are required within the server.
+    For a member instance to properly receive and respond to traffic arriving at the VIP, the following configurations are required within the server.
 
     - Add the VIP as an additional allowed address on the network interface (console Network Interface menu)
-- Configure kernel parameters (`arp_ignore=1`, `arp_announce=2`)
-- Add the VIP to the `lo` interface with a `/32` subnet
-- Allow service port and health check traffic in Security Groups
+    - Configure kernel parameters (`arp_ignore=1`, `arp_announce=2`)
+    - Add the VIP to the `lo` interface with a `/32` subnet
+    - Allow service port and health check traffic in Security Groups
 
-For detailed instructions, see the Member server configuration guide in [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/en/overview/).
+    For detailed instructions, see the Member server configuration guide in [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/en/overview/).
 
 !!! tip "Note"
-The initial status of a newly registered member is `INACTIVE`. Once the health check passes, the status automatically transitions to `ACTIVE` and the member begins receiving traffic.
+    The initial status of a newly registered member is `INACTIVE`. Once the health check passes, the status automatically transitions to `ACTIVE` and the member begins receiving traffic.
 
 After entering all items, click **Create Load Balancer** to create Load Balancer (DSR).
 
@@ -98,7 +98,7 @@ Once Load Balancer (DSR) creation is complete, the basic information of the crea
 * Status: The creation/operation status of Load Balancer (DSR).
 
 !!! tip "Note"
-The status of Load Balancer (DSR) is determined by one of the following:
+    The status of Load Balancer (DSR) is determined by one of the following:
 
     | Status | Description |
     |--|--|
@@ -130,17 +130,17 @@ A Floating IP can be connected or disconnected to enable access to Load Balancer
 3. Click **Confirm** to apply the settings.
 
 !!! tip "Note"
-Disassociating a Floating IP does not affect access to the VIP from within the VPC.
+    Disassociating a Floating IP does not affect access to the VIP from within the VPC.
 
 !!! tip "Note"
-The VPC, subnet, and VIP address connected to Load Balancer (DSR) cannot be changed after creation. If a change is needed, delete Load Balancer (DSR) and recreate it.
+    The VPC, subnet, and VIP address connected to Load Balancer (DSR) cannot be changed after creation. If a change is needed, delete Load Balancer (DSR) and recreate it.
 
 <a id='delete-dsr-loadbalancers'></a>
 ### Delete Load Balancer (DSR)
 On the Load Balancer (DSR) list screen, select the Load Balancer (DSR) to delete, click **Delete** button, and then click **Confirm** button in the confirmation window to delete the selected Load Balancer (DSR).
 
 !!! danger "Warning"
-Deleting Load Balancer (DSR) will also delete all members registered in the DSR. If a Floating IP is associated, it will be automatically released.
+    Deleting Load Balancer (DSR) will also delete all members registered in the DSR. If a Floating IP is associated, it will be automatically released.
 
 <a id='manage-dsr-members'></a>
 ## Member Management
@@ -157,10 +157,10 @@ The **Members** tab displays the list and status of member instances registered 
 * Status: The current status of the member.
 
 !!! tip "Note"
-Since Load Balancer (DSR) forwards client requests to members while preserving the destination port, the L4 service port is not displayed separately in the member list. The actual service port is the port that the client uses to send requests to the VIP, and the application on the member server must listen on the port.
+    Since Load Balancer (DSR) forwards client requests to members while preserving the destination port, the L4 service port is not displayed separately in the member list. The actual service port is the port that the client uses to send requests to the VIP, and the application on the member server must listen on the port.
 
 !!! tip "Note"
-The member status is determined by one of the following:
+    The member status is determined by one of the following:
 
     | Status | Description |
     |--|--|
@@ -176,10 +176,10 @@ Click **+ Add Member** button on the **Member** tab to display the add member mo
 2. Click **Confirm** button to register the selected instances as members.
 
 !!! tip "Note"
-Unlike a standard load balancer, Load Balancer (DSR) does not require entering an L4 service port when adding members. Since Load Balancer (DSR) forwards the destination port of client requests to members without modification, per-member port mapping is not required.
+    Unlike a standard load balancer, Load Balancer (DSR) does not require entering an L4 service port when adding members. Since Load Balancer (DSR) forwards the destination port of client requests to members without modification, per-member port mapping is not required.
 
 !!! danger "Caution"
-Note the following restrictions when registering members:
+    Note the following restrictions when registering members:
 
     * Member instances must belong to the same subnet as Load Balancer (DSR).
     * Only compute instances can be registered as members.
@@ -187,14 +187,14 @@ Note the following restrictions when registering members:
     * By default, up to 30 members can be registered per Load Balancer (DSR).
 
 !!! tip "Note"
-To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
+    To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
 
 <a id='delete-dsr-members'></a>
 ### Delete Member
 Select the member to delete from the list on the Members tab and click **Delete** button. When the confirmation window appears, click **Confirm** to remove the member from Load Balancer (DSR).
 
 !!! tip "Note"
-Deleting a member from Load Balancer (DSR) does not delete the instance itself. Conversely, if an instance registered as a member is deleted, the member is automatically removed from Load Balancer (DSR).
+    Deleting a member from Load Balancer (DSR) does not delete the instance itself. Conversely, if an instance registered as a member is deleted, the member is automatically removed from Load Balancer (DSR).
 
 <a id='manage-dsr-health-monitor'></a>
 ## Health Check Management
@@ -226,10 +226,10 @@ Click **Change Setting** button on the **Health Check** tab to modify the health
 Click **Confirm** after completing the settings to apply the changes
 
 !!! danger "Caution"
-The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
+    The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
 
 !!! tip "Note"
-Health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as Load Balancer (DSR). The Security Group of member instances must allow this traffic for health checks to function correctly. For more information, see the Security Groups configuration section in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
+    Health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as Load Balancer (DSR). The Security Group of member instances must allow this traffic for health checks to function correctly. For more information, see the Security Groups configuration section in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
 
 <a id='dsr-quota'></a>
 ## Quota and Limitations
@@ -242,4 +242,4 @@ The following quotas and limitations apply when using Load Balancer (DSR):
 | Number of members per Load Balancer (DSR) | 30 | Maximum number of members that can be registered in a single Load Balancer (DSR) |
 
 !!! tip "Note"
-If you need to exceed the default quota, contact customer support.
+    If you need to exceed the default quota, contact customer support.
