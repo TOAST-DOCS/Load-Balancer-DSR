@@ -186,7 +186,7 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
     * 하나의 로드 밸런서(DSR)에는 기본적으로 최대 30개의 멤버를 등록할 수 있습니다.
 
 !!! tip "알아두기"
-    멤버 등록 후 트래픽을 정상적으로 수신하려면 네트워크 인터페이스에 VIP를 추가 허용 주소로 추가하고, 멤버 서버 내부에서 ARP 커널 파라미터 설정, lo 인터페이스에 VIP 추가, Security Groups 규칙 설정이 필요합니다. 자세한 절차는 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer%20(DSR)/ko/overview/)의 멤버 서버 설정 가이드를 참고하세요.
+    멤버 등록 후 트래픽을 정상적으로 수신하려면 네트워크 인터페이스에 VIP를 추가 허용 주소로 추가하고, 멤버 서버 내부에서 ARP 커널 파라미터 설정, lo 인터페이스에 VIP 추가, Security Groups 규칙 설정이 필요합니다. 자세한 절차는 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer(DSR)/ko/overview/)의 멤버 서버 설정 가이드를 참고하세요.
 
 <a id='delete-dsr-members'></a>
 ### 멤버 삭제
