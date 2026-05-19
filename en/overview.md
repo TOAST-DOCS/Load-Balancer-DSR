@@ -44,6 +44,13 @@ Load balancer (DSR) provides a session affinity feature. When enabled, requests 
 - Session affinity disabled: Members are selected based on the 5-tuple (source IP, source port, destination IP, destination port, protocol), and traffic is distributed accordingly. Even if the source IP is the same, requests may be routed to different members if the source port differs.
 - Session affinity enabled: Requests from the same client are always forwarded to the same member based on the source IP. Even if the source port changes, the same member is selected as long as the source IP remains the same.
 
+Members are selected using consistent hash-based mapping (Consistent Hashing) without a separate sticky table. When session affinity is disabled, the 5-tuple is used as the hash input; when enabled, the source IP is used. If the member configuration remains the same, the same input key always maps to the same member. Additionally, while an established session remains valid, all packets in that session are forwarded to the same member, ensuring per-session member affinity.
+
+The session persistence method varies by protocol:
+
+- TCP: Connection termination is detected by observing TCP flags (FIN/RST). Once a termination signal is confirmed, the session is quickly reclaimed with a short expiration time. The session is maintained as long as other traffic continues.
+- UDP: Since there is no connection termination signal, the session expires if no additional traffic is received for a certain period. Until expiration, the same flow continues to be forwarded to the same member.
+
 !!! tip "Note"
 Session affinity is useful in the following cases:
 
@@ -456,6 +463,7 @@ Note the following when using Load Balancer (DSR).
 
 - Same subnet requirement: Load Balancer (DSR) and all member instances must be located in the same subnet.
 - Protocol limitations: Load Balancer (DSR) operates at the L4 level and does not provide L7 features (such as HTTP header-based routing and SSL offloading), unlike a standard load balancer.
+- Fragmented packet handling: Fragmented IP packets are dropped because the L4 header (port/flags) cannot be inspected, making consistent member mapping impossible. Configure the MTU of the client and member instances appropriately, or ensure Path MTU Discovery is functioning correctly to prevent fragmentation from occurring.
 - Instance deletion: If an instance registered as a load balancer member is deleted, the member is automatically removed from the load balancer.
 - VM live migration: When VM live migration is performed on a member instance, the network information is automatically updated internally. A temporary traffic interruption may occur during migration, but it is automatically restored upon completion.
 - Routing method change: Changing the routing method (DVR ↔ CVR) of the router in use may cause a temporary communication interruption (within 1 minute).
