@@ -29,12 +29,12 @@ The DSR load balancer uses a different traffic handling method than a standard l
 3. Direct response delivery: The member instance sends the response directly to the client without passing through the load balancer.
 
 !!! tip "Note"
-The DSR method has the following advantages since the response traffic does not pass through the load balancer:
+    The DSR method has the following advantages since the response traffic does not pass through the load balancer:
 
     - The load on the load balancer is significantly reduced, allowing more concurrent connections to be handled.
-- It is particularly beneficial for services with large response data, such as video streaming and large file downloads.
-- Network latency is reduced, improving response speed.
-- The client's source IP can be directly identified on the server.
+    - It is particularly beneficial for services with large response data, such as video streaming and large file downloads.
+    - Network latency is reduced, improving response speed.
+    - The client's source IP can be directly identified on the server.
 
 
 ## Session Affinity
@@ -52,14 +52,14 @@ The session persistence method varies by protocol:
 - UDP: Since there is no connection termination signal, the session expires if no additional traffic is received for a certain period. Until expiration, the same flow continues to be forwarded to the same member.
 
 !!! tip "Note"
-Session affinity is useful in the following cases:
+    Session affinity is useful in the following cases:
 
     - When user login sessions are managed on individual servers
-- When session synchronization between instances is not implemented
-- When there is a requirement to process a specific user's requests on the same server
+    - When session synchronization between instances is not implemented
+    - When there is a requirement to process a specific user's requests on the same server
 
 !!! tip "Note"
-Session affinity settings can be changed during operation. Changes do not affect existing TCP connections or ongoing UDP flows, and the updated settings are applied to new connections and flows.
+    Session affinity settings can be changed during operation. Changes do not affect existing TCP connections or ongoing UDP flows, and the updated settings are applied to new connections and flows.
 
 
 ## Instance health check
@@ -77,7 +77,7 @@ Load Balancer (DSR) supports the following health check protocols:
 - HTTP: Sends an HTTP request to the specified path and checks the response code. Provides a more accurate check of the actual service status of a web application. Requests are sent to the VIP of Load Balancer (DSR) as the destination.
 
 !!! tip "Note"
-Since TCP/HTTP health checks send requests to the DSR VIP as the destination, if the VIP is not configured on the lo interface of the member server, the packets cannot be received or processed, causing the health check to fail and the member to be marked as `INACTIVE`. This behavior is intended to detect missing VIP configuration on the server side at an early stage. ICMP health checks send requests to the actual IP of the member, so they only verify connectivity regardless of the VIP configuration.
+    Since TCP/HTTP health checks send requests to the DSR VIP as the destination, if the VIP is not configured on the lo interface of the member server, the packets cannot be received or processed, causing the health check to fail and the member to be marked as `INACTIVE`. This behavior is intended to detect missing VIP configuration on the server side at an early stage. ICMP health checks send requests to the actual IP of the member, so they only verify connectivity regardless of the VIP configuration.
 
 ### Health Check Settings
 
@@ -94,7 +94,7 @@ The following items must be configured for health checks:
 | Expected HTTP response code (expected_http_code) | The response code considered normal during HTTP health checks. | Configurable when using HTTP (default: `200`) |
 
 !!! danger "Caution"
-The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
+    The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
 
 
 ## Create Load Balancer (DSR)
@@ -109,7 +109,7 @@ When creating the Load Balancer (DSR), the VIP address can be assigned in one of
 - Manual assign: A desired IP within the CIDR range of the subnet is specified and used as the VIP.
 
 !!! danger "Caution"
-If the manually specified VIP address is not within the CIDR range of the subnet, creation will fail. Make sure to specify an IP within the IP range of the subnet.
+    If the manually specified VIP address is not within the CIDR range of the subnet, creation will fail. Make sure to specify an IP within the IP range of the subnet.
 
 ### Register Member
 
@@ -120,19 +120,19 @@ Load Balancer (DSR) distributes incoming traffic by registering instances as mem
 - SDN support: The member port must operate in an SDN (software defined network) environment.
 
 !!! danger "Caution"
-By default, up to 30 members can be registered per Load Balancer (DSR). If more members are needed, contact us separately.
+    By default, up to 30 members can be registered per Load Balancer (DSR). If more members are needed, contact us separately.
 
 !!! tip "Note"
-\* The initial status of a newly registered member is `INACTIVE`. Once the health check passes, the status automatically transitions to `ACTIVE` and the member begins receiving traffic.
-\* The same instance port cannot be registered more than once in the same Load Balancer (DSR).
-\* For a member instance to properly receive and respond to traffic, ARP and VIP settings must be configured within the server. For more information, see the Member server configuration guide section below.
+    * The initial status of a newly registered member is `INACTIVE`. Once the health check passes, the status automatically transitions to `ACTIVE` and the member begins receiving traffic.
+    * The same instance port cannot be registered more than once in the same Load Balancer (DSR).
+    * For a member instance to properly receive and respond to traffic, ARP and VIP settings must be configured within the server. For more information, see the Member server configuration guide section below.
 
 ## Member Server Configuration Guide
 
 Load Balancer (DSR) forwards client requests to member servers with the virtual IP (VIP) as the destination. For the member server to properly receive and respond to these packets, the following settings are required on the server side:
 
 !!! danger "Caution"
-Configurations must be applied in the following order: Step 1 (kernel parameters) → Step 2 (VIP configuration). If the VIP is assigned before configuring the kernel parameters, an ARP conflict with the load balancer's VIP may occur, resulting in a network failure.
+    Configurations must be applied in the following order: Step 1 (kernel parameters) → Step 2 (VIP configuration). If the VIP is assigned before configuring the kernel parameters, an ARP conflict with the load balancer's VIP may occur, resulting in a network failure.
 
 ### 1. Kernel Parameter Configuration (ARP Ignore/Announce)
 
@@ -171,7 +171,7 @@ sudo sysctl -p
 ```
 
 !!! tip "Note"
-You can check if the value has been configured to `1` by using the command `sysctl net.ipv4.conf.all.arp_ignore` after applying it.
+    You can check if the value has been configured to `1` by using the command `sysctl net.ipv4.conf.all.arp_ignore` after applying it.
 
 ### 2. VIP Configuration on Loopback Interface
 
@@ -191,7 +191,7 @@ sudo ip addr add <VIP>/32 dev lo
 Modify the configuration file in the `/etc/netplan/` directory (e.g., `01-netcfg.yaml`).
 
 !!! danger "Caution"
-The existing interface configuration must be preserved. Add or merge only the lo section.
+    The existing interface configuration must be preserved. Add or merge only the lo section.
 
 ```yaml
 network:
@@ -318,19 +318,19 @@ Load Balancer (DSR) periodically sends health check requests to the member serve
 | HTTP | Must return the expected HTTP response code (default 200) on the specified port/path. |
 
 !!! tip "Note"
-\* Health check requests are sent from a dedicated health check IP, not from the load balancer's VIP. Traffic from this IP must be allowed in the Security Group and the server's internal firewall. The dedicated health check IP is automatically assigned to the same subnet as the DSR.
-\* If an internal firewall is configured on the server, ensure that the service port and health check port (including ICMP) are not blocked.
+    * Health check requests are sent from a dedicated health check IP, not from the load balancer's VIP. Traffic from this IP must be allowed in the Security Group and the server's internal firewall. The dedicated health check IP is automatically assigned to the same subnet as the DSR.
+    * If an internal firewall is configured on the server, ensure that the service port and health check port (including ICMP) are not blocked.
 
 ### 5. Security Groups Configuration
 
 The Security Groups of member instances must allow service traffic and health check traffic from the DSR.
 
 !!! tip "Note"
-The default Security Group is associated with the ports corresponding to the VIP and dedicated health check IP of Load Balancer (DSR). However, Security Groups filtering (flow) is not applied to the DSR port itself.
+    The default Security Group is associated with the ports corresponding to the VIP and dedicated health check IP of Load Balancer (DSR). However, Security Groups filtering (flow) is not applied to the DSR port itself.
 
     Security Groups filtering is applied normally to the ports of member instances. Since DSR does not perform source IP translation (No SNAT), the source IP of service traffic is the client's original IP. Therefore, specifying only the default SG as the remote for service traffic is not sufficient; the client IP range or ANY (0.0.0.0/0) must be specified as the remote.
 
-In contrast, health check traffic is sent from a dedicated health check IP assigned to the same subnet as the DSR, and since the port of that IP belongs to the default SG, specifying the default SG as the remote allows the traffic.
+    In contrast, health check traffic is sent from a dedicated health check IP assigned to the same subnet as the DSR, and since the port of that IP belongs to the default SG, specifying the default SG as the remote allows the traffic.
 
 #### Method 1: Easy configuration
 
@@ -342,7 +342,7 @@ Since the DSR retains the client's source IP, both service traffic and status ch
 | Receive | Random | - | default | Allow health check traffic (the port of the dedicated health check IP belongs to the default SG) |
 
 !!! tip "Note"
-Since DSR does not perform source IP translation, the source IP of service traffic arriving at the member server is the client's original IP. If the client IP range is not specified, allow `0.0.0.0/0`. If the client range is confirmed, it can be restricted to the corresponding CIDR.
+    Since DSR does not perform source IP translation, the source IP of service traffic arriving at the member server is the client's original IP. If the client IP range is not specified, allow `0.0.0.0/0`. If the client range is confirmed, it can be restricted to the corresponding CIDR.
 
 #### Method 2: Individual rules (fine-grained control)
 
@@ -372,9 +372,9 @@ When using ICMP health checks, add the following:
 | Receive | ICMP | - | default | ICMP health check |
 
 !!! tip "Note"
-\* If the health check port (`health_check_port`) is set differently from the service port, both ports must be allowed in the Security Groups.
-\* If the client IP range is limited to a specific CIDR (e.g., `10.0.0.0/8`), the principle of least privilege can be applied by specifying that CIDR instead of `0.0.0.0/0`.
-\* In health check rules, the subnet CIDR (e.g., `192.168.1.0/24`) can be specified instead of the default Security Group. Since health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as the DSR, allowing by subnet CIDR is sufficient.
+    * If the health check port (`health_check_port`) is set differently from the service port, both ports must be allowed in the Security Groups.
+    * If the client IP range is limited to a specific CIDR (e.g., `10.0.0.0/8`), the principle of least privilege can be applied by specifying that CIDR instead of `0.0.0.0/0`.
+    * In health check rules, the subnet CIDR (e.g., `192.168.1.0/24`) can be specified instead of the default Security Group. Since health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as the DSR, allowing by subnet CIDR is sufficient.
 
 ### 6. Network Interface Security Settings Update
 
@@ -399,7 +399,7 @@ Add the VIP of Load Balancer (DSR) to the additional allowed address section of 
 * If a single instance is a member of multiple Load Balancer (DSR) instances, all VIPs must be added to the additional allowed addresses.
 
 !!! tip "Note"
-For the procedure to configure additional allowed addresses, see the [console user guide](/Network/Network%20Interface/ko/console-guide/).
+    For the procedure to configure additional allowed addresses, see the [console user guide](/Network/Network%20Interface/ko/console-guide/).
 
 
 ## Floating IP Association
@@ -411,7 +411,7 @@ A Floating IP can be associated with the VIP of Load Balancer (DSR) to enable ac
 - Associating or dissociating a Floating IP is automatically reflected in the load balancer.
 
 !!! tip "Note"
-Dissociating a Floating IP does not affect access to the VIP from the internal network.
+    Dissociating a Floating IP does not affect access to the VIP from the internal network.
 
 
 ## Quota and Limitations
@@ -425,7 +425,7 @@ The following quotas and limitations apply when using Load Balancer (DSR):
 | Number of members per project | No limit | |
 
 !!! tip "Note"
-If you need to exceed the default quota, contact customer support.
+    If you need to exceed the default quota, contact customer support.
 
 
 ## Load Balancer (DSR) Monitoring
@@ -451,10 +451,10 @@ Member Status
 | `ONLINE` | Member is manually disabled (`admin_state_up=false`) |
 
 !!! tip "Note"
-The member status is automatically changed to `ACTIVE` or `INACTIVE` based on the health check result. A member that becomes `INACTIVE` due to a health check failure is automatically excluded from traffic distribution, and if the health check subsequently passes, the member transitions back to `ACTIVE` and resumes receiving traffic. A manually deactivated member is displayed as `ONLINE` and excluded from traffic distribution.
+    The member status is automatically changed to `ACTIVE` or `INACTIVE` based on the health check result. A member that becomes `INACTIVE` due to a health check failure is automatically excluded from traffic distribution, and if the health check subsequently passes, the member transitions back to `ACTIVE` and resumes receiving traffic. A manually deactivated member is displayed as `ONLINE` and excluded from traffic distribution.
 
 !!! tip "Note"
-Newly registered members start in the `INACTIVE` state. They automatically transition to `ACTIVE` after passing the health check.
+    Newly registered members start in the `INACTIVE` state. They automatically transition to `ACTIVE` after passing the health check.
 
 
 ## Caution
