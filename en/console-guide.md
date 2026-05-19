@@ -187,7 +187,7 @@ Note the following restrictions when registering members:
     * By default, up to 30 members can be registered per Load Balancer (DSR).
 
 !!! tip "Note"
-To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer%20(DSR)/ko/overview/).
+To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
 
 <a id='delete-dsr-members'></a>
 ### Delete Member
