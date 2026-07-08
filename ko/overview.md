@@ -1,4 +1,5 @@
-## Network > Load Balancer(DSR) > 개요
+<a id="network-load-balancer-dsr-overview"></a>
+## Network > Load Balancer(DSR) > 개요 { #network-load-balancer-dsr-overview }
 
 NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합니다. 로드 밸런서(DSR)를 이용하면,
 
@@ -7,11 +8,13 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 - 서버 응답 트래픽이 로드 밸런서를 거치지 않고 직접 클라이언트로 전송되어 높은 성능을 제공합니다.
 
 
-## DSR(direct server return) 방식
+<a id="dsr-method"></a>
+## DSR(direct server return) 방식 { #dsr-method }
 
 로드 밸런서(DSR)는 일반 로드 밸런서와 다른 트래픽 처리 방식을 사용합니다.
 
-### 일반 로드 밸런서(프록시 모드)와 차이점
+<a id="differences-from-a-standard-load-balancer-proxy-mode"></a>
+### 일반 로드 밸런서(프록시 모드)와 차이점 { #differences-from-a-standard-load-balancer-proxy-mode }
 
 | 구분 | 일반 로드 밸런서(프록시 모드) | 로드 밸런서(DSR) |
 |------|------|------|
@@ -22,7 +25,8 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 | 처리 성능 | 보통 | 매우 높음 |
 | 프로토콜 지원 | HTTP, HTTPS, TERMINATED_HTTPS, TCP | TCP, UDP |
 
-### DSR 방식의 동작 원리
+<a id="how-dsr-works"></a>
+### DSR 방식의 동작 원리 { #how-dsr-works }
 
 1. 클라이언트 요청: 클라이언트가 로드 밸런서의 VIP(virtual IP)로 요청을 전송합니다.
 2. 요청 분산: 로드 밸런서가 적절한 멤버 인스턴스를 선택하여 요청을 전달합니다.
@@ -37,7 +41,8 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
     - 클라이언트의 원본 IP를 서버에서 직접 확인할 수 있습니다.
 
 
-## 세션 지속성
+<a id="session-affinity"></a>
+## 세션 지속성 { #session-affinity }
 
 로드 밸런서(DSR)는 세션 지속성(Session persistence) 기능을 제공합니다. 이 기능을 활성화하면 동일한 클라이언트의 요청을 지속적으로 같은 멤버 인스턴스로 전달할 수 있습니다.
 
@@ -62,11 +67,13 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
     세션 지속성 설정은 운영 중에도 변경할 수 있습니다. 변경 시 기존에 수립된 TCP 연결 및 진행 중인 UDP 플로우에는 영향이 없으며, 새로운 연결/플로우부터 변경된 설정이 적용됩니다.
 
 
-## 인스턴스 상태 확인
+<a id="instance-health-check"></a>
+## 인스턴스 상태 확인 { #instance-health-check }
 
 로드 밸런서(DSR)는 멤버로 등록된 인스턴스가 정상적으로 동작하는지 주기적으로 상태 확인(Health check)을 수행합니다. 상태 확인은 지정된 프로토콜에 따라 정해진 응답이 오는지 확인하는 방식입니다. 지정된 횟수나 시간 내에 정상 응답이 오지 않으면 비정상 인스턴스로 간주하여 부하 분산 대상에서 제외합니다. 이 기능으로 예기치 못한 장애나 점검에도 중단 없이 서비스를 제공할 수 있습니다.
 
-### 지원 프로토콜
+<a id="supported-protocols"></a>
+### 지원 프로토콜 { #supported-protocols }
 
 로드 밸런서(DSR)는 다음과 같은 상태 확인 프로토콜을 지원합니다.
 
@@ -79,7 +86,8 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 !!! tip "알아두기"
     TCP/HTTP 상태 확인은 DSR VIP를 목적지로 요청하므로, 멤버 서버의 lo 인터페이스에 VIP가 설정되어 있지 않으면 해당 패킷이 수신·처리되지 못해 상태 확인이 실패하고 멤버가 `INACTIVE`로 판정됩니다. 이는 서버 측 VIP 설정 누락을 조기에 탐지하기 위한 동작입니다. ICMP 상태 확인은 멤버의 실제 IP로 요청하므로 VIP 설정과 무관하게 연결성만 확인합니다.
 
-### 상태 확인 설정
+<a id="health-check-settings"></a>
+### 상태 확인 설정 { #health-check-settings }
 
 상태 확인을 위해서는 다음 항목을 설정해야 합니다.
 
@@ -97,11 +105,13 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
     지연 시간(delay)은 타임아웃(timeout)보다 크거나 같아야 합니다. 타임아웃이 지연 시간보다 크면 상태 확인이 정상적으로 동작하지 않을 수 있습니다.
 
 
-## 로드 밸런서(DSR) 생성
+<a id="create-load-balancer-dsr"></a>
+## 로드 밸런서(DSR) 생성 { #create-load-balancer-dsr }
 
 로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview/#_2)의 [서브넷](/Network/VPC/ko/overview/#_2) 내에서 생성됩니다.
 
-### VIP 주소 할당
+<a id="assign-vip-address"></a>
+### VIP 주소 할당 { #assign-vip-address }
 
 로드 밸런서(DSR) 생성 시 VIP(virtual IP) 주소를 다음 두 가지 방식으로 할당할 수 있습니다.
 
@@ -111,7 +121,8 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 !!! danger "주의"
     직접 지정한 VIP 주소가 서브넷의 CIDR 범위에 속하지 않으면 생성이 실패합니다. 반드시 해당 서브넷의 IP 범위 내에서 지정하세요.
 
-### 멤버 등록
+<a id="register-member"></a>
+### 멤버 등록 { #register-member }
 
 로드 밸런서(DSR)는 인스턴스를 멤버로 등록하여 유입된 트래픽을 분배합니다. 멤버 등록 시 다음 사항을 준수해야 합니다.
 
@@ -127,17 +138,20 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
     * 동일한 인스턴스 포트를 같은 로드 밸런서(DSR)에 중복으로 등록할 수 없습니다.
     * 멤버로 등록된 인스턴스가 트래픽을 정상적으로 수신·응답하려면 서버 내부에서 ARP 및 VIP 설정이 필요합니다. 자세한 내용은 아래 멤버 서버 설정 가이드 섹션을 참고하세요.
 
-## 멤버 서버 설정 가이드
+<a id="member-server-configuration-guide"></a>
+## 멤버 서버 설정 가이드 { #member-server-configuration-guide }
 
 로드 밸런서(DSR)는 클라이언트의 요청을 멤버 서버에 VIP(virtual IP)를 목적지로 하여 전달합니다. 멤버 서버가 이 패킷을 정상적으로 수신하고 응답하려면, 서버 측에서 아래의 설정이 필요합니다.
 
 !!! danger "주의"
     반드시 1단계(커널 파라미터) → 2단계(VIP 설정) 순서로 설정해야 합니다. 커널 파라미터를 설정하지 않고 VIP를 먼저 할당하면 로드 밸런서의 VIP와 ARP 충돌이 발생하여 네트워크 장애가 일어날 수 있습니다.
 
-### 1. 커널 파라미터 설정(ARP Ignore/Announce)
+<a id="kernel-parameter-configuration-arp-ignoreannounce"></a>
+### 1. 커널 파라미터 설정(ARP Ignore/Announce) { #kernel-parameter-configuration-arp-ignoreannounce }
 
 네트워크 인터페이스에 VIP를 설정하기 전에 서버가 VIP에 대한 ARP 요청에 응답하지 않도록 커널 설정을 먼저 수행해야 합니다. 이 설정을 하지 않고 VIP를 할당하면 로드 밸런서의 VIP와 충돌이 발생하여 네트워크 장애가 일어날 수 있습니다.
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-parameter-value-definitions"></a>
 #### 설정값의 의미
 
 | 파라미터 | 값 | 설명 |
@@ -145,6 +159,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 | `arp_ignore` | `1` | ARP 요청을 받았을 때 해당 IP가 요청이 들어온 인터페이스에 설정되어 있는 경우에만 응답합니다. (lo에 설정된 VIP에 대해서는 응답하지 않게 됨) |
 | `arp_announce` | `2` | 외부로 ARP 패킷을 보낼 때 소스 IP를 해당 인터페이스의 주소로 고정하여 VIP 주소를 유출하지 않습니다. |
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-real-time-application"></a>
 #### 실시간 적용
 
 ```bash
@@ -154,6 +169,7 @@ sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
 sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
 ```
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-permanent-application-etcsysctlconf"></a>
 #### 영구 적용(/etc/sysctl.conf)
 
 파일 끝에 아래 내용을 추가합니다.
@@ -173,10 +189,12 @@ sudo sysctl -p
 !!! tip "알아두기"
     적용 후 `sysctl net.ipv4.conf.all.arp_ignore` 명령으로 값이 `1`로 설정되었는지 확인할 수 있습니다.
 
-### 2. Loopback 인터페이스에 VIP 설정
+<a id="vip-configuration-on-loopback-interface"></a>
+### 2. Loopback 인터페이스에 VIP 설정 { #vip-configuration-on-loopback-interface }
 
 서버가 로드 밸런서로부터 전달된 패킷(목적지가 VIP인 패킷)을 자신의 패킷으로 인식할 수 있도록 lo 인터페이스에 VIP를 부여합니다.
 
+<a id="vip-configuration-on-loopback-interface-temporary-configuration-deleted-on-reboot"></a>
 #### 임시 설정(재부팅 시 삭제)
 
 ```bash
@@ -184,6 +202,7 @@ sudo sysctl -p
 sudo ip addr add <VIP>/32 dev lo
 ```
 
+<a id="vip-configuration-on-loopback-interface-permanent-configuration"></a>
 #### 영구 설정
 
 ##### Ubuntu 18.04 이상(Netplan)
@@ -229,6 +248,7 @@ EOF
 sudo ifup lo:0
 ```
 
+<a id="vip-configuration-on-loopback-interface-when-a-member-of-multiple-dsr-instances"></a>
 #### 여러 DSR의 멤버인 경우
 
 하나의 인스턴스가 여러 로드 밸런서(DSR)의 멤버로 등록된 경우, 각 VIP를 모두 lo 인터페이스에 추가하고 네트워크 인터페이스의 추가 허용 주소에도 각 VIP를 모두 등록해야 합니다.
@@ -252,8 +272,10 @@ network:
         - <VIP_2>/32
 ```
 
-### 3. 설정 확인 및 테스트
+<a id="configuration-verification-and-testing"></a>
+### 3. 설정 확인 및 테스트 { #configuration-verification-and-testing }
 
+<a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### IP 설정 확인
 
 lo 인터페이스에 VIP가 `/32` 서브넷으로 정상 등록되었는지 확인합니다.
@@ -270,6 +292,7 @@ ip addr show lo
     inet 192.168.1.100/32 scope host lo
 ```
 
+<a id="configuration-verification-and-testing-verify-arp-response"></a>
 #### ARP 응답 확인
 
 외부(동일 서브넷의 다른 서버)에서 VIP로 ARP 요청을 보냈을 때 멤버 서버의 MAC 주소가 응답되지 않아야 합니다. (로드 밸런서의 MAC만 응답해야 정상)
@@ -281,6 +304,7 @@ arping -c 3 <VIP>
 
 응답되는 MAC 주소가 로드 밸런서의 MAC인지 확인합니다. 멤버 서버의 MAC이 응답되면 ARP 설정이 잘못된 것입니다.
 
+<a id="configuration-verification-and-testing-verify-kernel-parameter"></a>
 #### 커널 파라미터 확인
 
 ```bash
@@ -292,8 +316,10 @@ sysctl net.ipv4.conf.lo.arp_announce
 
 각각 `1`, `2`, `1`, `2`가 출력되어야 합니다.
 
-### 4. 서비스 설정
+<a id="service-configuration"></a>
+### 4. 서비스 설정 { #service-configuration }
 
+<a id="service-configuration-application-binding"></a>
 #### 애플리케이션 바인딩
 
 애플리케이션(Nginx, Apache, Tomcat 등) 설정 시 소켓이 `0.0.0.0`(Any) 또는 VIP를 수신 대기(Listen)하고 있어야 패킷을 수신할 수 있습니다.
@@ -307,6 +333,7 @@ sysctl net.ipv4.conf.lo.arp_announce
 !!! danger "주의"
     애플리케이션이 서버의 실제 인터페이스 IP(예: `eth0`의 IP)에만 바인딩되어 있으면 VIP로 도착한 패킷을 수신할 수 없습니다. `0.0.0.0`으로 바인딩하거나, VIP 주소를 명시적으로 추가 바인딩해야 합니다.
 
+<a id="service-configuration-response-to-health-check"></a>
 #### 상태 확인 대응
 
 로드 밸런서(DSR)는 멤버 서버에 주기적으로 상태 확인 요청을 보냅니다. 서버가 상태 확인에 정상 응답해야 `ACTIVE` 상태를 유지할 수 있습니다.
@@ -321,7 +348,8 @@ sysctl net.ipv4.conf.lo.arp_announce
     * 상태 확인 요청은 로드 밸런서의 VIP가 아닌 상태 확인 전용 IP에서 발송됩니다. Security Group 및 서버 내부 방화벽에서 해당 IP의 트래픽을 허용해야 합니다. 상태 확인 전용 IP는 DSR과 동일한 서브넷에 자동으로 할당됩니다.
     * 서버에 내부 방화벽이 설정되어 있는 경우, 서비스 포트와 상태 확인 포트(ICMP 포함)가 차단되지 않는지 확인하세요.
 
-### 5. Security Groups 설정
+<a id="security-groups-configuration"></a>
+### 5. Security Groups 설정 { #security-groups-configuration }
 
 멤버 인스턴스의 Security Groups에서 DSR로부터의 서비스 트래픽과 상태 확인 트래픽을 허용해야 합니다.
 
@@ -332,6 +360,7 @@ sysctl net.ipv4.conf.lo.arp_announce
 
     반면, 상태 확인 트래픽은 DSR과 동일한 서브넷에 할당된 상태 확인 전용 IP에서 발송되며, 해당 IP의 포트가 default SG에 속해 있으므로 `default` SG를 원격으로 지정하면 허용됩니다.
 
+<a id="security-groups-configuration-method-1-easy-configuration"></a>
 #### 방법 1: 간편 설정
 
 DSR은 클라이언트의 소스 IP를 그대로 유지하므로, 서비스 트래픽과 상태 확인 트래픽을 각각 허용해야 합니다.
@@ -344,6 +373,7 @@ DSR은 클라이언트의 소스 IP를 그대로 유지하므로, 서비스 트�
 !!! tip "알아두기"
     DSR은 패킷의 소스 IP를 변환하지 않으므로, 멤버 서버에 도착하는 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 클라이언트 IP 대역이 특정되지 않는 경우 `0.0.0.0/0`으로 허용해야 합니다. 클라이언트 대역이 확정된 경우 해당 CIDR로 제한할 수 있습니다.
 
+<a id="security-groups-configuration-method-2-individual-rules-fine-grained-control"></a>
 #### 방법 2: 개별 규칙으로 허용(세밀한 제어)
 
 보안 정책상 최소 권한 원칙을 적용하거나, 특정 포트만 허용해야 하는 경우 개별 규칙을 추가합니다.
@@ -376,12 +406,14 @@ ICMP 상태 확인을 사용하는 경우 추가:
     * 클라이언트 IP 대역이 특정 CIDR(예: `10.0.0.0/8`)로 한정되어 있다면, `0.0.0.0/0` 대신 해당 CIDR을 지정하여 최소 권한 원칙을 적용할 수 있습니다.
     * 상태 확인 규칙에서 default Security Group 대신 서브넷 CIDR(예: `192.168.1.0/24`)로 지정할 수도 있습니다. 상태 확인 요청은 DSR과 동일한 서브넷에 자동 할당된 상태 확인 전용 IP에서 발송되므로, 서브넷 CIDR 단위로 허용하면 됩니다.
 
-### 6. 네트워크 인터페이스 보안 설정 변경
+<a id="network-interface-security-settings-update"></a>
+### 6. 네트워크 인터페이스 보안 설정 변경 { #network-interface-security-settings-update }
 
 DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지한 채 멤버 서버에 전달합니다. NHN Cloud의 네트워크 환경에서는 보안을 위해 인스턴스에 할당된 IP가 아닌 다른 IP를 소스나 목적으로 하는 패킷을 기본적으로 차단합니다.
 
 따라서 멤버 인스턴스가 VIP를 목적지로 하는 패킷을 수신하고, 다시 VIP를 소스로 하여 응답할 수 있도록 네트워크 인터페이스에 VIP를 추가 허용 주소로 추가해야 합니다.
 
+<a id="network-interface-security-settings-update-reason-for-the-settings"></a>
 #### 설정이 필요한 이유
 
 ```
@@ -390,6 +422,7 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
                                          포트에 할당된 IP와 목적지(VIP)가 다름 → 추가 허용 주소 미등록 시 패킷 드롭
 ```
 
+<a id="network-interface-security-settings-update-main-configuration-method"></a>
 #### 주요 설정 방법
 
 멤버 서버의 네트워크 인터페이스(Port)의 추가 허용 주소 항목에 로드 밸런서(DSR)의 VIP를 추가합니다.
@@ -402,7 +435,8 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
     추가 허용 주소 설정 절차는 [콘솔 사용 가이드](/Network/Network%20Interface/ko/console-guide/)를 참고하세요.
 
 
-## Floating IP 연결
+<a id="floating-ip-association"></a>
+## Floating IP 연결 { #floating-ip-association }
 
 로드 밸런서(DSR)의 VIP에 Floating IP를 연결하여 외부 네트워크에서 접근할 수 있도록 설정할 수 있습니다.
 
@@ -414,7 +448,8 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
     Floating IP를 분리해도 내부 네트워크에서 VIP를 통한 접근은 영향을 받지 않습니다.
 
 
-## 쿼터 및 제한사항
+<a id="quota-and-limitations"></a>
+## 쿼터 및 제한사항 { #quota-and-limitations }
 
 로드 밸런서(DSR) 사용 시 다음과 같은 쿼터 및 제한사항이 적용됩니다:
 
@@ -428,11 +463,13 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
     기본 쿼터를 초과하여 사용해야 하는 경우 고객지원으로 문의하세요.
 
 
-## 로드 밸런서(DSR) 모니터링
+<a id="load-balancer-dsr-monitoring"></a>
+## 로드 밸런서(DSR) 모니터링 { #load-balancer-dsr-monitoring }
 
 로드 밸런서(DSR)의 상태와 멤버 인스턴스의 상태 확인 결과를 실시간으로 모니터링할 수 있습니다.
 
-### 상태 정보
+<a id="status-information"></a>
+### 상태 정보 { #status-information }
 
 로드 밸런서(DSR) 상태
 
@@ -457,7 +494,8 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
     새로 등록된 멤버는 `INACTIVE` 상태로 시작합니다. 상태 확인 통과 후 자동으로 `ACTIVE`로 전환됩니다.
 
 
-## 주의 사항
+<a id="caution"></a>
+## 주의 사항 { #caution }
 
 로드 밸런서(DSR) 사용 시 다음 사항에 주의하세요.
 
