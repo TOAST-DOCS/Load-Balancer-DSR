@@ -1,4 +1,7 @@
-## Network > Load Balancer(DSR) > 概要
+<!-- pre-align:aligned sig=9be9447442b4 -->
+
+<a id="network-load-balancer-dsr-overview"></a>
+## Network > Load Balancer(DSR) > 概要 { #network-load-balancer-dsr-overview }
 
 NHN Cloudは、DSR(direct server return)方式のロードバランサーを提供します。ロードバランサー(DSR)を利用すると、
 
@@ -7,11 +10,13 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
 - サーバーのレスポンストラフィックがロードバランサーを経由せずにクライアントへ直接転送され、高いパフォーマンスを提供します。
 
 
-## DSR(direct server return)方式
+<a id="dsr-method"></a>
+## DSR(direct server return)方式 { #dsr-method }
 
 ロードバランサー(DSR)は、一般的なロードバランサーとは異なるトラフィック処理方式を使用します。
 
-### 一般的なロードバランサー(プロキシモード)との違い
+<a id="differences-from-a-standard-load-balancer-proxy-mode"></a>
+### 一般的なロードバランサー(プロキシモード)との違い { #differences-from-a-standard-load-balancer-proxy-mode }
 
 | 区分 | 一般的なロードバランサー(プロキシモード) | ロードバランサー(DSR) |
 |------|------|------|
@@ -22,7 +27,8 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
 | 処理性能 | 普通 | 非常に高い |
 | サポートプロトコル | HTTP、HTTPS、TERMINATED_HTTPS、TCP | TCP、UDP |
 
-### DSR方式の動作原理
+<a id="how-dsr-works"></a>
+### DSR方式の動作原理 { #how-dsr-works }
 
 1. クライアントリクエスト: クライアントがロードバランサーのVIP(virtual IP)にリクエストを送信します。
 2. リクエストの分散: ロードバランサーが適切なメンバーインスタンスを選択してリクエストを転送します。
@@ -37,7 +43,8 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
     - クライアントの送信元IPをサーバーで直接確認できます。
 
 
-## セッションの持続性
+<a id="session-affinity"></a>
+## セッションの持続性 { #session-affinity }
 
 ロードバランサー(DSR)は、セッションの持続性(Session persistence)機能を提供します。この機能を有効化すると、同一のクライアントからのリクエストを継続して同じメンバーインスタンスへ転送できます。
 
@@ -62,11 +69,13 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
     セッションの持続性設定は運用中にも変更できます。変更時、すでに確立されたTCP接続や進行中のUDPフローには影響がなく、新しい接続/フローから変更された設定が適用されます。
 
 
-## インスタンスのヘルスチェック
+<a id="instance-health-check"></a>
+## インスタンスのヘルスチェック { #instance-health-check }
 
 ロードバランサー(DSR)は、メンバーとして登録されたインスタンスが正常に動作しているか、定期的にヘルスチェック(Health check)を実行します。ヘルスチェックは、指定されたプロトコルに従って定められたレスポンスがあるかを確認する方式です。指定された回数または時間内に正常なレスポンスがなければ、異常なインスタンスとみなして負荷分散の対象から除外します。この機能により、予期せぬ障害やメンテナンスの際もサービスを停止することなく提供できます。
 
-### サポートプロトコル
+<a id="supported-protocols"></a>
+### サポートプロトコル { #supported-protocols }
 
 ロードバランサー(DSR)は、以下のヘルスチェックプロトコルをサポートします。
 
@@ -79,7 +88,8 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
 !!! tip "ポイント"
     TCP/HTTPヘルスチェックはDSR VIPを宛先としてリクエストするため、メンバーサーバーのloインターフェースにVIPが設定されていない場合、該当パケットが受信・処理されずにヘルスチェックが失敗し、メンバーが`INACTIVE`と判定されます。これは、サーバー側のVIP設定の漏れを早期に検知するための動作です。ICMPヘルスチェックはメンバーの実際のIPにリクエストするため、VIP設定に関係なく接続性のみを確認します。
 
-### ヘルスチェック設定
+<a id="health-check-settings"></a>
+### ヘルスチェック設定 { #health-check-settings }
 
 ヘルスチェックのためには、以下の項目を設定する必要があります。
 
@@ -97,11 +107,13 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
     遅延時間(delay)はタイムアウト(timeout)以上である必要があります。タイムアウトが遅延時間より大きい場合、ヘルスチェックが正常に動作しない可能性があります。
 
 
-## ロードバランサー(DSR)作成
+<a id="create-load-balancer-dsr"></a>
+## ロードバランサー(DSR)作成 { #create-load-balancer-dsr }
 
 ロードバランサー(DSR)は、[VPC](/Network/VPC/ja/overview/#_2)の[サブネット](/Network/VPC/ja/overview/#_2)内で作成されます。
 
-### VIPアドレスの割り当て
+<a id="assign-vip-address"></a>
+### VIPアドレスの割り当て { #assign-vip-address }
 
 ロードバランサー(DSR)作成時、VIP(virtual IP)アドレスを以下の2つの方式で割り当てることができます。
 
@@ -111,7 +123,8 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
 !!! danger "注意"
     直接指定したVIPアドレスがサブネットのCIDR範囲に含まれていない場合、作成に失敗します。必ず該当サブネットのIP範囲内で指定してください。
 
-### メンバーの登録
+<a id="register-member"></a>
+### メンバーの登録 { #register-member }
 
 ロードバランサー(DSR)は、インスタンスをメンバーとして登録し、流入したトラフィックを分散させます。メンバー登録時は、以下の事項を遵守する必要があります。
 
@@ -127,17 +140,20 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
     * 同一のインスタンスポートを同じロードバランサー(DSR)に重複して登録することはできません。
     * メンバーとして登録されたインスタンスがトラフィックを正常に送受信するためには、サーバー内部でARP及びVIP設定が必要です。詳細については、以下のメンバーサーバー設定ガイドセクションをご参照ください。
 
-## メンバーサーバー設定ガイド
+<a id="member-server-configuration-guide"></a>
+## メンバーサーバー設定ガイド { #member-server-configuration-guide }
 
 ロードバランサー(DSR)は、クライアントからのリクエストをメンバーサーバーに対してVIP(virtual IP)を宛先として転送します。メンバーサーバーがこのパケットを正常に受信してレスポンスを返すためには、サーバー側で以下の設定が必要です。
 
 !!! danger "注意"
     必ず1段階(カーネルパラメータ) → 2段階(VIP設定)の順序で設定する必要があります。カーネルパラメータを設定せずにVIPを先に割り当てると、ロードバランサーのVIPとARPの競合が発生し、ネットワーク障害が起こる可能性があります。
 
-### 1. カーネルパラメータの設定(ARP Ignore/Announce)
+<a id="kernel-parameter-configuration-arp-ignoreannounce"></a>
+### 1. カーネルパラメータの設定(ARP Ignore/Announce) { #kernel-parameter-configuration-arp-ignoreannounce }
 
 ネットワークインターフェースにVIPを設定する前に、サーバーがVIPに対するARPリクエストに応答しないように、先にカーネル設定を行う必要があります。この設定を行わずにVIPを割り当てると、ロードバランサーのVIPとの競合が発生し、ネットワーク障害が起こる可能性があります。
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-parameter-value-definitions"></a>
 #### 設定値の意味
 
 | パラメータ | 値 | 説明 |
@@ -145,6 +161,7 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
 | `arp_ignore` | `1` | ARPリクエストを受信した際、該当IPがリクエストを受け取ったインターフェースに設定されている場合にのみ応答します。(loに設定されたVIPに対しては応答しなくなります) |
 | `arp_announce` | `2` | 外部へARPパケットを送信する際、送信元IPを該当インターフェースのアドレスに固定し、VIPアドレスを流出させません。 |
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-real-time-application"></a>
 #### リアルタイム適用
 
 ```bash
@@ -154,6 +171,7 @@ sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
 sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
 ```
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-permanent-application-etcsysctlconf"></a>
 #### 永続適用(/etc/sysctl.conf)
 
 ファイルの末尾に以下の内容を追加します。
@@ -173,10 +191,12 @@ sudo sysctl -p
 !!! tip "ポイント"
     適用後、`sysctl net.ipv4.conf.all.arp_ignore`コマンドで値が`1`に設定されたかを確認できます。
 
-### 2. LoopbackインターフェースへのVIP設定
+<a id="vip-configuration-on-loopback-interface"></a>
+### 2. LoopbackインターフェースへのVIP設定 { #vip-configuration-on-loopback-interface }
 
 サーバーがロードバランサーから転送されたパケット(宛先がVIPのパケット)を自身のパケットとして認識できるように、loインターフェースにVIPを付与します。
 
+<a id="vip-configuration-on-loopback-interface-temporary-configuration-deleted-on-reboot"></a>
 #### 一時的な設定(再起動時に削除)
 
 ```bash
@@ -184,6 +204,7 @@ sudo sysctl -p
 sudo ip addr add <VIP>/32 dev lo
 ```
 
+<a id="vip-configuration-on-loopback-interface-permanent-configuration"></a>
 #### 永続的な設定
 
 ##### Ubuntu 18.04以降(Netplan)
@@ -229,6 +250,7 @@ EOF
 sudo ifup lo:0
 ```
 
+<a id="vip-configuration-on-loopback-interface-when-a-member-of-multiple-dsr-instances"></a>
 #### 複数のDSRのメンバーである場合
 
 1つのインスタンスが複数のロードバランサー(DSR)のメンバーとして登録されている場合、各VIPを全てloインターフェースに追加し、ネットワークインターフェースの追加許可アドレスにも各VIPを全て登録する必要があります。
@@ -252,8 +274,10 @@ network:
         - <VIP_2>/32
 ```
 
-### 3. 設定の確認及びテスト
+<a id="configuration-verification-and-testing"></a>
+### 3. 設定の確認及びテスト { #configuration-verification-and-testing }
 
+<a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### IP設定の確認
 
 loインターフェースにVIPが`/32`サブネットとして正常に登録されているかを確認します。
@@ -270,6 +294,7 @@ ip addr show lo
     inet 192.168.1.100/32 scope host lo
 ```
 
+<a id="configuration-verification-and-testing-verify-arp-response"></a>
 #### ARP応答の確認
 
 外部(同一サブネットの他のサーバー)からVIP宛てにARPリクエストを送信した際、メンバーサーバーのMACアドレスが応答しないようにする必要があります。(ロードバランサーのMACのみが応答するのが正常)
@@ -281,6 +306,7 @@ arping -c 3 <VIP>
 
 応答するMACアドレスがロードバランサーのMACであるかを確認します。メンバーサーバーのMACが応答する場合、ARP設定が誤っています。
 
+<a id="configuration-verification-and-testing-verify-kernel-parameter"></a>
 #### カーネルパラメータの確認
 
 ```bash
@@ -292,8 +318,10 @@ sysctl net.ipv4.conf.lo.arp_announce
 
 それぞれ`1`、`2`、`1`、`2`が出力される必要があります。
 
-### 4. サービス設定
+<a id="service-configuration"></a>
+### 4. サービス設定 { #service-configuration }
 
+<a id="service-configuration-application-binding"></a>
 #### アプリケーションのバインド
 
 アプリケーション(Nginx、Apache、Tomcatなど)の設定時、ソケットが`0.0.0.0`(Any)またはVIPを受信待機(Listen)している状態でのみパケットを受信できます。
@@ -307,6 +335,7 @@ sysctl net.ipv4.conf.lo.arp_announce
 !!! danger "注意"
     アプリケーションがサーバーの実際のインターフェースIP(例: `eth0`のIP)にのみバインドされている場合、VIP宛てに到着したパケットを受信できません。`0.0.0.0`にバインドするか、VIPアドレスを明示的に追加でバインドする必要があります。
 
+<a id="service-configuration-response-to-health-check"></a>
 #### ヘルスチェックへの対応
 
 ロードバランサー(DSR)は、メンバーサーバーへ定期的にヘルスチェックリクエストを送信します。サーバーがヘルスチェックに正常なレスポンスを返してはじめて、`ACTIVE`状態を維持できます。
@@ -321,7 +350,8 @@ sysctl net.ipv4.conf.lo.arp_announce
     * ヘルスチェックリクエストは、ロードバランサーのVIPではなくヘルスチェック専用IPから送信されます。Security Groups及びサーバーの内部ファイアウォールで該当IPのトラフィックを許可する必要があります。ヘルスチェック専用IPは、DSRと同じサブネットに自動で割り当てられます。
     * サーバーに内部ファイアウォールが設定されている場合、サービスポートとヘルスチェックポート(ICMPを含む)が遮断されていないか確認してください。
 
-### 5. Security Groups設定
+<a id="security-groups-configuration"></a>
+### 5. Security Groups設定 { #security-groups-configuration }
 
 メンバーインスタンスのSecurity Groupsで、DSRからのサービストラフィックとヘルスチェックのトラフィックを許可する必要があります。
 
@@ -332,6 +362,7 @@ sysctl net.ipv4.conf.lo.arp_announce
 
     一方、ヘルスチェックのトラフィックはDSRと同じサブネットに割り当てられたヘルスチェック専用IPから送信され、該当IPのポートがdefault SGに属しているため、`default` SGをリモートとして指定すれば許可されます。
 
+<a id="security-groups-configuration-method-1-easy-configuration"></a>
 #### 方法1: 簡単設定
 
 DSRはクライアントの送信元IPをそのまま維持するため、サービストラフィックとヘルスチェックのトラフィックをそれぞれ許可する必要があります。
@@ -344,6 +375,7 @@ DSRはクライアントの送信元IPをそのまま維持するため、サー
 !!! tip "ポイント"
     DSRはパケットの送信元IPを変換しないため、メンバーサーバーに到達するサービストラフィックの送信元IPはクライアントの元のIPとなります。クライアントIP範囲が特定されない場合は`0.0.0.0/0`で許可する必要があります。クライアントの帯域が確定している場合は、該当のCIDRに制限できます。
 
+<a id="security-groups-configuration-method-2-individual-rules-fine-grained-control"></a>
 #### 方法2: 個別のルールで許可(詳細な制御)
 
 セキュリティポリシー上で最小権限の原則を適用したり、特定のポートのみを許可する必要がある場合は、個別のルールを追加します。
@@ -376,12 +408,14 @@ ICMPヘルスチェックを使用する場合の追加:
     * クライアントIP範囲が特定のCIDR(例: `10.0.0.0/8`)に限定されている場合は、`0.0.0.0/0`の代わりに該当のCIDRを指定して、最小権限の原則を適用できます。
     * ヘルスチェックのルールでdefault Security Groupの代わりにサブネットCIDR(例: `192.168.1.0/24`)を指定することもできます。ヘルスチェックリクエストは、DSRと同じサブネットに自動で割り当てられたヘルスチェック専用IPから送信されるため、サブネットCIDR単位で許可すれば問題ありません。
 
-### 6. ネットワークインターフェースのセキュリティ設定の変更
+<a id="network-interface-security-settings-update"></a>
+### 6. ネットワークインターフェースのセキュリティ設定の変更 { #network-interface-security-settings-update }
 
 DSR方式では、ロードバランサーがパケットの宛先IPをVIPのまま維持してメンバーサーバーへ転送します。NHN Cloudのネットワーク環境では、セキュリティのため、インスタンスに割り当てられたIP以外のIPを送信元または宛先とするパケットをデフォルトで遮断します。
 
 したがって、メンバーインスタンスがVIPを宛先とするパケットを受信し、再びVIPを送信元としてレスポンスを返せるように、ネットワークインターフェースにVIPを追加許可アドレスとして追加する必要があります。
 
+<a id="network-interface-security-settings-update-reason-for-the-settings"></a>
 #### 設定が必要な理由
 
 ```
@@ -390,6 +424,7 @@ DSR方式では、ロードバランサーがパケットの宛先IPをVIPのま
                                          ポートに割り当てられたIPと宛先(VIP)が異なる → 追加許可アドレスの未登録時はパケットドロップ
 ```
 
+<a id="network-interface-security-settings-update-main-configuration-method"></a>
 #### 主な設定方法
 
 メンバーサーバーのネットワークインターフェース(Port)の追加許可アドレスの項目に、ロードバランサー(DSR)のVIPを追加します。
@@ -402,7 +437,8 @@ DSR方式では、ロードバランサーがパケットの宛先IPをVIPのま
     追加許可アドレスの設定手順については、[コンソール使用ガイド](/Network/Network%20Interface/ja/console-guide/)をご参照ください。
 
 
-## フローティングIPの接続
+<a id="floating-ip-association"></a>
+## フローティングIPの接続 { #floating-ip-association }
 
 ロードバランサー(DSR)のVIPにフローティングIPを接続して、外部ネットワークからアクセスできるように設定できます。
 
@@ -414,7 +450,8 @@ DSR方式では、ロードバランサーがパケットの宛先IPをVIPのま
     フローティングIPを解除しても、内部ネットワークからVIPを通じたアクセスは影響を受けません。
 
 
-## クォータ及び制限事項
+<a id="quota-and-limitations"></a>
+## クォータ及び制限事項 { #quota-and-limitations }
 
 ロードバランサー(DSR)を使用する際は、以下のクォータ及び制限事項が適用されます。
 
@@ -428,11 +465,13 @@ DSR方式では、ロードバランサーがパケットの宛先IPをVIPのま
     デフォルトのクォータを超過して使用する必要がある場合は、カスタマーサポートへお問い合わせください。
 
 
-## ロードバランサー(DSR)のモニタリング
+<a id="load-balancer-dsr-monitoring"></a>
+## ロードバランサー(DSR)のモニタリング { #load-balancer-dsr-monitoring }
 
 ロードバランサー(DSR)の状態と、メンバーインスタンスのヘルスチェック結果をリアルタイムでモニタリングできます。
 
-### 状態情報
+<a id="status-information"></a>
+### 状態情報 { #status-information }
 
 ロードバランサー(DSR)の状態
 
@@ -457,7 +496,8 @@ DSR方式では、ロードバランサーがパケットの宛先IPをVIPのま
     新しく登録されたメンバーは`INACTIVE`状態で開始します。ヘルスチェック通過後、自動で`ACTIVE`に切り替わります。
 
 
-## 注意事項
+<a id="caution"></a>
+## 注意事項 { #caution }
 
 ロードバランサー(DSR)を使用する際は、以下の事項に注意してください。
 
