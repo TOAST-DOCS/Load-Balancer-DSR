@@ -124,6 +124,7 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
 * 이름, 설명
 * 서브넷 및 VIP 주소
 * 플로팅 IP 연결 정보
+* 삭제 보호 설정 여부
 * 상태
 
 <a id='view-dsr-loadbalancers-rename'></a>
@@ -144,12 +145,19 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
 !!! tip "알아두기"
     로드 밸런서(DSR)가 연결된 VPC, 서브넷, VIP 주소는 생성 후 변경할 수 없습니다. 변경이 필요한 경우 로드 밸런서(DSR)를 삭제한 뒤 재생성해야 합니다.
 
+<a id='view-dsr-loadbalancers-delete-protection'></a>
+#### 삭제 보호
+삭제 보호를 활성화하면 실수로 로드 밸런서(DSR)가 삭제되지 않도록 보호할 수 있습니다. 삭제 보호를 비활성화할 때까지 해당 로드 밸런서(DSR)를 삭제할 수 없습니다. 삭제 보호 설정은 로드 밸런서(DSR)를 생성한 후에도 언제든지 변경할 수 있습니다.
+
 <a id='delete-dsr-loadbalancers'></a>
 ### 로드 밸런서(DSR) 삭제 { #delete-dsr-loadbalancers }
 로드 밸런서(DSR) 목록 화면에서 삭제하려는 로드 밸런서(DSR)를 선택한 후 **삭제** 버튼을 클릭하고 확인 창에서 **확인** 버튼을 클릭하면 해당 로드 밸런서(DSR)가 삭제됩니다.
 
 !!! danger "주의"
     로드 밸런서(DSR)를 삭제하면 해당 DSR에 등록된 모든 멤버가 함께 삭제됩니다. 플로팅 IP가 연결된 경우 자동으로 해제됩니다.
+
+!!! tip "알아두기"
+    삭제 보호가 활성화된 로드 밸런서(DSR)는 삭제할 수 없습니다. 삭제하려면 먼저 해당 로드 밸런서(DSR)의 [삭제 보호](#view-dsr-loadbalancers-delete-protection)를 비활성화해야 합니다.
 
 <a id='manage-dsr-members'></a>
 ## 멤버 관리 { #manage-dsr-members }
@@ -198,6 +206,13 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
 
 !!! tip "알아두기"
     멤버 등록 후 트래픽을 정상적으로 수신하려면 네트워크 인터페이스에 VIP를 추가 허용 주소로 추가하고, 멤버 서버 내부에서 ARP 커널 파라미터 설정, lo 인터페이스에 VIP 추가, Security Groups 규칙 설정이 필요합니다. 자세한 절차는 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer(DSR)/ko/overview/)의 멤버 서버 설정 가이드를 참고하세요.
+
+<a id='deactivate-dsr-members'></a>
+### 멤버 비활성화 { #deactivate-dsr-members }
+특정 멤버를 삭제하지 않고 임시로 서비스에서 제외할 수 있습니다. 멤버 탭의 목록에서 제외할 멤버를 선택하고 **멤버 비활성화** 버튼을 클릭한 후 **확인** 버튼을 클릭합니다. 비활성화된 멤버의 상태는 `ONLINE`으로 변경되며, 트래픽 분산 대상에서 제외됩니다.
+
+!!! tip "알아두기"
+    비활성화된 멤버는 로드 밸런서(DSR)에서 제거되지 않고 등록된 상태로 유지되므로, 로드 밸런서(DSR)당 멤버 수 쿼터에는 계속 포함됩니다. 멤버 상태 값에 대한 자세한 설명은 [멤버 목록](#member-list)을 참고하세요.
 
 <a id='delete-dsr-members'></a>
 ### 멤버 삭제 { #delete-dsr-members }
