@@ -1,14 +1,16 @@
-## Network > Load Balancer(DSR) > Console User Guide
+<a id='network-load-balancerdsr-console-user-guide'></a>
+## Network > Load Balancer(DSR) > Console User Guide { #network-load-balancerdsr-console-user-guide }
 
 <a id='manage-dsr-loadbalancers'></a>
-## Load Balancer (DSR) Management
+## Load Balancer (DSR) Management { #manage-dsr-loadbalancers }
 
 <a id='create-dsr-loadbalancers'></a>
-### Create Load Balancer (DSR)
+### Create Load Balancer (DSR) { #create-dsr-loadbalancers }
 You can easily create a DSR-type load balancer by simply entering the settings in the NHN Cloud console. Load Balancer (DSR) operates in direct server return (DSR) mode, allowing server response traffic to be sent directly to the client without passing through the load balancer, providing high throughput.
 
 The Load Balancer (DSR) creation screen consists of the following three sections:
 
+<a id='create-dsr-loadbalancers-load-balancer-dsr-basic-information-settings'></a>
 #### 1. Load Balancer (DSR) Basic Information Settings
 
 Configure the basic information for Load Balancer (DSR). The required items are as follows:
@@ -27,6 +29,7 @@ Configure the basic information for Load Balancer (DSR). The required items are 
 !!! tip "Note"
     Load Balancer (DSR) operates at the TCP/UDP L4 level, and server response traffic does not pass through the load balancer. Therefore, unlike a standard load balancer, L7 features such as HTTP header-based routing, SSL offloading, and the listener/member group concept are not provided.
 
+<a id='create-dsr-loadbalancers-health-check-settings'></a>
 #### 2. Health Check Settings
 
 Configure health checks to periodically verify that member instances are operating normally.
@@ -59,6 +62,7 @@ Configure the following additional items for each protocol:
 !!! tip "Note"
     TCP/HTTP health checks send requests to the DSR VIP as the destination, if the VIP is not configured on the lo interface of the member server, the packets cannot be received or processed, causing the health check to fail and the member to be marked as `INACTIVE`. ICMP health checks send requests to the actual IP of the member, so they only verify connectivity regardless of the VIP configuration.
 
+<a id='create-dsr-loadbalancers-member-settings'></a>
 #### 3. Member Settings
 
 Specify the member instances to register when creating Load Balancer (DSR). Members can also be registered after Load Balancer (DSR) is created.
@@ -84,8 +88,9 @@ Specify the member instances to register when creating Load Balancer (DSR). Memb
 After entering all items, click **Create Load Balancer** to create Load Balancer (DSR).
 
 <a id='view-dsr-loadbalancers'></a>
-### Load Balancer (DSR) Details and Modification
+### Load Balancer (DSR) Details and Modification { #view-dsr-loadbalancers }
 
+<a id='view-dsr-loadbalancers-load-balancer-dsr-list'></a>
 #### Load Balancer (DSR) List
 
 Once Load Balancer (DSR) creation is complete, the basic information of the created Load Balancer (DSR) instances can be viewed on the list screen. The items displayed on the list screen are as follows:
@@ -108,20 +113,24 @@ Once Load Balancer (DSR) creation is complete, the basic information of the crea
 
 Additional Load Balancer (DSR) instances can be created using **+ Create DSR** button at the top. To delete, select Load Balancer (DSR) instances using the checkboxes in the list, then click **Delete** button.
 
+<a id='view-dsr-loadbalancers-load-balancer-dsr-details'></a>
 #### Load Balancer (DSR) Details
 
 Selecting a Load Balancer (DSR) from the list displays its details at the bottom of the screen. The details screen is divided into three tabs: **Basic information**, **Members**, and **Health Check**.
 
 The **Basic Information** tab displays the following:
 
-* Name, description
+* Name, Description
 * Subnet, VIP address
 * Floating IP connection information
+* Whether to set delete protection
 * Status
 
+<a id='view-dsr-loadbalancers-rename'></a>
 #### Rename
 To modify the name of Load Balancer (DSR), click **Modify Name** icon in the details, enter the new name, and click **Confirm**.
 
+<a id='view-dsr-loadbalancers-change-floating-ip'></a>
 #### Change Floating IP
 A Floating IP can be connected or disconnected to enable access to Load Balancer (DSR) from an external network.
 
@@ -135,19 +144,27 @@ A Floating IP can be connected or disconnected to enable access to Load Balancer
 !!! tip "Note"
     The VPC, subnet, and VIP address connected to Load Balancer (DSR) cannot be changed after creation. If a change is needed, delete Load Balancer (DSR) and recreate it.
 
+<a id='view-dsr-loadbalancers-delete-protection'></a>
+#### Deletion Protection
+If you activate deletion protection, you can protect load balancers (DSR) from accidental deletion. The load balancer (DSR) cannot be deleted until deletion protection is deactivated. You can change the deletion protection setting at any time after creating a load balancer (DSR).
+
 <a id='delete-dsr-loadbalancers'></a>
-### Delete Load Balancer (DSR)
+### Delete Load Balancer (DSR) { #delete-dsr-loadbalancers }
 On the Load Balancer (DSR) list screen, select the Load Balancer (DSR) to delete, click **Delete** button, and then click **Confirm** button in the confirmation window to delete the selected Load Balancer (DSR).
 
 !!! danger "Warning"
     Deleting Load Balancer (DSR) will also delete all members registered in the DSR. If a Floating IP is associated, it will be automatically released.
 
+!!! tip "Note"
+    You cannot delete a Load Balancer (DSR) with deletion protection enabled. To delete it, you must first disable [deletion protection](#view-dsr-loadbalancers-delete-protection) for the Load Balancer (DSR).
+
 <a id='manage-dsr-members'></a>
-## Member Management
+## Member Management { #manage-dsr-members }
 
 Select the desired load balancer (DSR) from the load balancer (DSR) list, then click **Members** tab to display the member instance management screen.
 
-### Member List
+<a id='member-list'></a>
+### Member List { #member-list }
 
 The **Members** tab displays the list and status of member instances registered in Load Balancer (DSR). The items displayed in the list are as follows:
 
@@ -169,7 +186,7 @@ The **Members** tab displays the list and status of member instances registered 
     | `ONLINE` | The member is manually disabled |
 
 <a id='add-dsr-members'></a>
-### Add Member
+### Add Member { #add-dsr-members }
 Click **+ Add Member** button on the **Member** tab to display the add member modal.
 
 1. Select the **instance** to register as a member from the list. One or more instances can be selected simultaneously.
@@ -189,20 +206,27 @@ Click **+ Add Member** button on the **Member** tab to display the add member mo
 !!! tip "Note"
     To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
 
+<a id='deactivate-dsr-members'></a>
+### Deactivate Members { #deactivate-dsr-members }
+You can temporarily exclude a member from the service without deleting it. Select the member to exclude from the list on the Members tab, click the **Deactivate Member** button, and then click **Confirm**. The status of a deactivated member changes to `ONLINE` and the member is excluded from traffic distribution.
+
+!!! tip "Note"
+    A deactivated member remains registered in Load Balancer (DSR) without being removed, and continues to count toward the number of members per Load Balancer (DSR) quota. For more information about member status values, see [Member List](#member-list).
+
 <a id='delete-dsr-members'></a>
-### Delete Member
+### Delete Member { #delete-dsr-members }
 Select the member to delete from the list on the Members tab and click **Delete** button. When the confirmation window appears, click **Confirm** to remove the member from Load Balancer (DSR).
 
 !!! tip "Note"
     Deleting a member from Load Balancer (DSR) does not delete the instance itself. Conversely, if an instance registered as a member is deleted, the member is automatically removed from Load Balancer (DSR).
 
 <a id='manage-dsr-health-monitor'></a>
-## Health Check Management
+## Health Check Management { #manage-dsr-health-monitor }
 
 The current health check settings can be viewed and modified on the **Health Check** tab of the Load Balancer (DSR) details screen.
 
 <a id='view-dsr-health-monitor'></a>
-### View Health Check
+### View Health Check { #view-dsr-health-monitor }
 The **Health Check** tab displays the following information about the currently configured health check:
 
 * Health check protocol: TCP / ICMP / HTTP
@@ -213,7 +237,7 @@ The **Health Check** tab displays the following information about the currently 
 * HTTP path (URL) / Expected HTTP response code: Displayed only when using HTTP protocol
 
 <a id='change-dsr-health-monitor'></a>
-### Change Health Check Settings
+### Change Health Check Settings { #change-dsr-health-monitor }
 Click **Change Setting** button on the **Health Check** tab to modify the health check settings.
 
 * Health check protocol: Select one of TCP, ICMP, or HTTP.
@@ -232,7 +256,7 @@ Click **Confirm** after completing the settings to apply the changes
     Health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as Load Balancer (DSR). The Security Group of member instances must allow this traffic for health checks to function correctly. For more information, see the Security Groups configuration section in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
 
 <a id='dsr-quota'></a>
-## Quota and Limitations
+## Quota and Limitations { #dsr-quota }
 
 The following quotas and limitations apply when using Load Balancer (DSR):
 
