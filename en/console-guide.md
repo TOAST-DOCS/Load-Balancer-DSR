@@ -6,7 +6,6 @@
 ## Network > Load Balancer(DSR) > Console User Guide { #network-load-balancerdsr-console-user-guide }
 
 <a id='manage-dsr-loadbalancers'></a>
-
 ## Load Balancer (DSR) Management { #manage-dsr-loadbalancers }
 
 <a id='create-dsr-loadbalancers'></a>
@@ -269,5 +268,5 @@ The **Members** tab displays the list and status of member instances registered 
     | `ONLINE` | The member is manually disabled |
 
 <a id='add-dsr-members'></a>
-### Deactivate Members { #deactivate-dsr-members }
+### Deactivate Members { #add-dsr-members }
 You can temporarily exclude a member from the service without deleting it. Select the member to exclude from the list on the Members tab, click the **Deactivate Member** button, and then click **Confirm**. The status of a deactivated member changes to `ONLINE` and the member is excluded from traffic distribution.
