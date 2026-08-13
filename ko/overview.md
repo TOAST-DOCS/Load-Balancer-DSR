@@ -382,9 +382,9 @@ sysctl net.ipv4.conf.lo.arp_announce
 !!! tip "알아두기"
     로드 밸런서(DSR)의 VIP와 상태 확인 전용 IP에 해당하는 포트에는 default Security Group이 연결되어 있습니다. 다만, DSR 포트 자체에는 Security Groups의 필터링(flow)이 적용되지 않습니다.
 
-    멤버 인스턴스의 포트에는 Security Groups 필터링이 정상 적용됩니다. 이때 DSR은 패킷의 소스 IP를 변환하지 않으므로(No SNAT), 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 따라서 서비스 트래픽에 대해서는 `default` SG를 원격으로 지정하는 것만으로는 허용되지 않으며, 클라이언트 IP 대역 또는 ANY(`0.0.0.0/0`)를 원격으로 지정해야 합니다.
+    멤버 인스턴스의 포트에는 Security Groups 필터링이 정상 적용됩니다. 이때 DSR은 패킷의 소스 IP를 변환하지 않으므로(No SNAT), 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 따라서 서비스 트래픽에 대해서는 클라이언트 IP 대역 또는 ANY(`0.0.0.0/0`)를 원격으로 지정해야 합니다.
 
-    반면, 상태 확인 트래픽은 DSR과 동일한 서브넷에 할당된 상태 확인 전용 IP에서 발송되며, 해당 IP의 포트가 default SG에 속해 있으므로 `default` SG를 원격으로 지정하면 허용됩니다.
+    상태 확인 트래픽은 DSR과 동일한 서브넷에 할당된 상태 확인 전용 IP에서 발송되므로, 해당 서브넷의 CIDR을 원격으로 지정하면 허용됩니다. 상태 확인 전용 IP의 포트는 default Security Group에도 속해 있어 `default` SG를 원격으로 지정하는 방법으로도 허용할 수 있습니다.
 
 <a id="security-groups-configuration-method-1-easy-configuration"></a>
 #### 방법 1: 간편 설정
@@ -394,43 +394,46 @@ DSR은 클라이언트의 소스 IP를 그대로 유지하므로, 서비스 트�
 | 방향 | IP 프로토콜 | 포트 범위 | 원격 | 설명 |
 |------|-----------|----------|------|------|
 | 수신 | TCP 또는 UDP | 서비스 포트(예: 80) | 0.0.0.0/0 | 클라이언트로부터의 서비스 트래픽 허용(서비스 프로토콜에 맞게 지정) |
-| 수신 | 임의 | - | default | 상태 확인 트래픽 허용(상태 확인 전용 IP의 포트가 default SG에 속함) |
+| 수신 | 임의 | - | DSR 서브넷 CIDR(예: `192.168.1.0/24`) | 상태 확인 트래픽 허용(상태 확인 전용 IP가 DSR과 동일한 서브넷에 할당됨) |
 
 !!! tip "알아두기"
     DSR은 패킷의 소스 IP를 변환하지 않으므로, 멤버 서버에 도착하는 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 클라이언트 IP 대역이 특정되지 않는 경우 `0.0.0.0/0`으로 허용해야 합니다. 클라이언트 대역이 확정된 경우 해당 CIDR로 제한할 수 있습니다.
+
+!!! danger "주의"
+    상태 확인 트래픽의 원격으로 `default` Security Group을 지정할 수도 있으나, 이 경우 default SG에 속한 모든 리소스가 해당 포트로 접근할 수 있게 됩니다. 인스턴스는 별도로 지정하지 않으면 default SG에 포함되는 경우가 많아, 서브넷이나 용도(web/app/db 등)로 구분한 네트워크 경계가 Security Group 수준에서 느슨해질 수 있습니다. `default` SG 지정은 초기 테스트·검증 용도로만 사용하고, 운영 환경에서는 DSR 서브넷 CIDR을 지정하는 방식을 권장합니다.
 
 <a id="security-groups-configuration-method-2-individual-rules-fine-grained-control"></a>
 #### 방법 2: 개별 규칙으로 허용(세밀한 제어)
 
 보안 정책상 최소 권한 원칙을 적용하거나, 특정 포트만 허용해야 하는 경우 개별 규칙을 추가합니다.
 
-| 용도 | 프로토콜 | 포트 | 원격 | 비고 |
+| 용도 | 프로토콜 | 포트 | 원격(권장) | 비고 |
 |------|---------|------|------|------|
 | 서비스 트래픽(TCP) | TCP | 서비스 포트(예: 80, 443) | 클라이언트 IP 대역 또는 0.0.0.0/0 | DSR은 SNAT하지 않으므로 소스 IP가 클라이언트 원본 IP |
 | 서비스 트래픽(UDP) | UDP | 서비스 포트(예: 53, 514) | 클라이언트 IP 대역 또는 0.0.0.0/0 | UDP 프로토콜 서비스 사용 시 |
-| TCP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR 또는 default SG | 상태 확인 전용 IP에서 발송 |
-| ICMP 상태 확인 | ICMP | - | DSR 서브넷 CIDR 또는 default SG | ICMP 타입 사용 시 |
-| HTTP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR 또는 default SG | HTTP 타입 사용 시 |
+| TCP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR | 상태 확인 전용 IP가 DSR과 동일한 서브넷에 할당됨 |
+| ICMP 상태 확인 | ICMP | - | DSR 서브넷 CIDR | ICMP 타입 사용 시 |
+| HTTP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR | HTTP 타입 사용 시 |
 
 ##### 콘솔에서 규칙 추가 예시
 
-서비스 포트 80, TCP 상태 확인 포트 80인 경우:
+서비스 포트 80, TCP 상태 확인 포트 80이고 DSR 서브넷이 `192.168.1.0/24`인 경우:
 
 | 방향 | IP 프로토콜 | 포트 범위 | 원격 | 설명 |
 |------|-----------|----------|------|------|
 | 수신 | TCP | 80 | 0.0.0.0/0 | 클라이언트로부터의 서비스 트래픽 |
-| 수신 | TCP | 80 | default | 상태 확인 트래픽 |
+| 수신 | TCP | 80 | 192.168.1.0/24 | 상태 확인 트래픽 |
 
 ICMP 상태 확인을 사용하는 경우 추가:
 
 | 방향 | IP 프로토콜 | 포트 범위 | 원격 | 설명 |
 |------|-----------|----------|------|------|
-| 수신 | ICMP | - | default | ICMP 상태 확인 |
+| 수신 | ICMP | - | 192.168.1.0/24 | ICMP 상태 확인 |
 
 !!! tip "알아두기"
     * 상태 확인 포트(`health_check_port`)를 서비스 포트와 다르게 설정한 경우, Security Groups에서 두 포트를 모두 허용해야 합니다.
     * 클라이언트 IP 대역이 특정 CIDR(예: `10.0.0.0/8`)로 한정되어 있다면, `0.0.0.0/0` 대신 해당 CIDR을 지정하여 최소 권한 원칙을 적용할 수 있습니다.
-    * 상태 확인 규칙에서 default Security Group 대신 서브넷 CIDR(예: `192.168.1.0/24`)로 지정할 수도 있습니다. 상태 확인 요청은 DSR과 동일한 서브넷에 자동 할당된 상태 확인 전용 IP에서 발송되므로, 서브넷 CIDR 단위로 허용하면 됩니다.
+    * 운영 환경에서는 default Security Group을 그대로 사용하기보다, 용도(web/app/db 등)별 전용 Security Group을 생성하여 필요한 규칙만 적용하는 방식을 권장합니다. 상태 확인 규칙의 원격도 `default` SG 대신 DSR 서브넷 CIDR로 지정하면, 서브넷·용도 단위의 네트워크 경계를 유지할 수 있습니다.
 
 <a id="network-interface-security-settings-update"></a>
 ### 6. 네트워크 인터페이스 보안 설정 변경 { #network-interface-security-settings-update }

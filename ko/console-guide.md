@@ -256,7 +256,7 @@ NHN Cloud 콘솔에서 로드 밸런서(DSR) 설정값들을 입력하는 것만
     지연 시간은 타임아웃보다 크거나 같아야 합니다. 타임아웃이 지연 시간보다 크면 상태 확인이 정상적으로 동작하지 않을 수 있습니다.
 
 !!! tip "알아두기"
-    상태 확인 요청은 로드 밸런서(DSR)와 동일한 서브넷에 자동 할당된 상태 확인 전용 IP에서 발송됩니다. 멤버 인스턴스의 Security Group에서 해당 트래픽을 허용해야 상태 확인이 정상 동작합니다. 자세한 내용은 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer(DSR)/ko/overview/)의 Security Groups 설정 섹션을 참고하세요.
+    상태 확인 요청은 로드 밸런서(DSR)와 동일한 서브넷에 자동 할당된 상태 확인 전용 IP에서 발송됩니다. 멤버 인스턴스의 Security Group에서 해당 서브넷 CIDR로부터의 트래픽을 허용해야 상태 확인이 정상 동작합니다. 자세한 내용은 [로드 밸런서(DSR) 개요](/Network/Load%20Balancer(DSR)/ko/overview/)의 Security Groups 설정 섹션을 참고하세요.
 
 <a id='dsr-quota'></a>
 ## 쿼터 및 제한 사항 { #dsr-quota }
