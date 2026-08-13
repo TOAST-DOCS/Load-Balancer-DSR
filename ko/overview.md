@@ -291,6 +291,16 @@ network:
 <a id="configuration-verification-and-testing"></a>
 ### 3. 설정 확인 및 테스트 { #configuration-verification-and-testing }
 
+멤버가 `INACTIVE` 상태이거나 트래픽을 수신하지 못하는 경우, 멤버 인스턴스마다 아래 항목을 순서대로 점검합니다. 설정 누락 항목은 멤버마다 다를 수 있으므로 모든 멤버를 각각 확인해야 합니다.
+
+| 순서 | 점검 항목 | 확인 방법 | 정상 상태 |
+|------|----------|----------|----------|
+| 1 | lo 인터페이스의 VIP | `ip addr show lo` | VIP(사설 IP)가 `/32`로 등록됨 |
+| 2 | 커널 파라미터 | `sysctl net.ipv4.conf.{all,lo}.arp_ignore`, `sysctl net.ipv4.conf.{all,lo}.arp_announce` | `arp_ignore=1`, `arp_announce=2` |
+| 3 | 추가 허용 주소 | 콘솔 **Network > Network Interface**의 **추가 허용 주소** | VIP(`<VIP>/32`)가 등록됨 |
+| 4 | Security Groups | 멤버 인스턴스의 Security Groups 규칙 | 서비스 포트와 상태 확인 포트가 모두 허용됨(아래 [Security Groups 설정](#security-groups-configuration) 참고) |
+| 5 | 애플리케이션 바인딩 | `ss -ltnp` 등 | `0.0.0.0` 또는 VIP를 수신 대기 |
+
 <a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### IP 설정 확인
 
