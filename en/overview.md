@@ -1,4 +1,7 @@
-## Network > Load Balancer (DSR) > Overview
+<!-- pre-align:aligned sig=9be9447442b4 -->
+
+<a id="network-load-balancer-dsr-overview"></a>
+## Network > Load Balancer (DSR) > Overview { #network-load-balancer-dsr-overview }
 
 NHN Cloud provides a load balancer that supports direct server return (DSR). With the DSR load balancer:
 
@@ -7,11 +10,13 @@ NHN Cloud provides a load balancer that supports direct server return (DSR). Wit
 - Achieve high performance, as server response traffic is sent directly to the client without passing through the load balancer.
 
 
-## DSR Method
+<a id="dsr-method"></a>
+## DSR Method { #dsr-method }
 
 The DSR load balancer uses a different traffic handling method than a standard load balancer.
 
-### Differences from a standard load balancer (proxy mode)
+<a id="differences-from-a-standard-load-balancer-proxy-mode"></a>
+### Differences from a standard load balancer (proxy mode) { #differences-from-a-standard-load-balancer-proxy-mode }
 
 | Category | Standard load balancer (proxy mode) | Load balancer (DSR) |
 |------|------|------|
@@ -22,7 +27,8 @@ The DSR load balancer uses a different traffic handling method than a standard l
 | Throughput | Neutral | Very high |
 | Protocol support | HTTP, HTTPS, TERMINATED_HTTPS, TCP | TCP, UDP |
 
-### How DSR works
+<a id="how-dsr-works"></a>
+### How DSR works { #how-dsr-works }
 
 1. Client request: The client sends a request to the virtual (VIP IP) of the load balancer.
 2. Request distribution: The load balancer selects an appropriate member instance and forwards the request.
@@ -37,7 +43,8 @@ The DSR load balancer uses a different traffic handling method than a standard l
     - The client's source IP can be directly identified on the server.
 
 
-## Session Affinity
+<a id="session-affinity"></a>
+## Session Affinity { #session-affinity }
 
 Load balancer (DSR) provides a session affinity feature. When enabled, requests from the same client are consistently forwarded to the same member instance.
 
@@ -62,11 +69,13 @@ The session persistence method varies by protocol:
     Session affinity settings can be changed during operation. Changes do not affect existing TCP connections or ongoing UDP flows, and the updated settings are applied to new connections and flows.
 
 
-## Instance health check
+<a id="instance-health-check"></a>
+## Instance health check { #instance-health-check }
 
 Load Balancer (DSR) periodically performs health checks to verify that member instances are operating normally. A health check confirms whether the expected response is received according to the specified protocol. If a normal response is not received within the specified number of attempts or time limit, the instance is considered unhealthy and excluded from load balancing. This feature ensures uninterrupted service even in the event of unexpected failures or maintenance.
 
-### Supported Protocols
+<a id="supported-protocols"></a>
+### Supported Protocols { #supported-protocols }
 
 Load Balancer (DSR) supports the following health check protocols:
 
@@ -79,7 +88,8 @@ Load Balancer (DSR) supports the following health check protocols:
 !!! tip "Note"
     Since TCP/HTTP health checks send requests to the DSR VIP as the destination, if the VIP is not configured on the lo interface of the member server, the packets cannot be received or processed, causing the health check to fail and the member to be marked as `INACTIVE`. This behavior is intended to detect missing VIP configuration on the server side at an early stage. ICMP health checks send requests to the actual IP of the member, so they only verify connectivity regardless of the VIP configuration.
 
-### Health Check Settings
+<a id="health-check-settings"></a>
+### Health Check Settings { #health-check-settings }
 
 The following items must be configured for health checks:
 
@@ -97,11 +107,13 @@ The following items must be configured for health checks:
     The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
 
 
-## Create Load Balancer (DSR)
+<a id="create-load-balancer-dsr"></a>
+## Create Load Balancer (DSR) { #create-load-balancer-dsr }
 
 Load Balancer (DSR) is created within the [VPC](/Network/VPC/ko/overview/#_2) in the [subnet](/Network/VPC/ko/overview/#_2).
 
-### Assign VIP Address
+<a id="assign-vip-address"></a>
+### Assign VIP Address { #assign-vip-address }
 
 When creating the Load Balancer (DSR), the VIP address can be assigned in one of the following two ways:
 
@@ -111,7 +123,8 @@ When creating the Load Balancer (DSR), the VIP address can be assigned in one of
 !!! danger "Caution"
     If the manually specified VIP address is not within the CIDR range of the subnet, creation will fail. Make sure to specify an IP within the IP range of the subnet.
 
-### Register Member
+<a id="register-member"></a>
+### Register Member { #register-member }
 
 Load Balancer (DSR) distributes incoming traffic by registering instances as members. The following requirements must be met when registering members:
 
@@ -127,17 +140,20 @@ Load Balancer (DSR) distributes incoming traffic by registering instances as mem
     * The same instance port cannot be registered more than once in the same Load Balancer (DSR).
     * For a member instance to properly receive and respond to traffic, ARP and VIP settings must be configured within the server. For more information, see the Member server configuration guide section below.
 
-## Member Server Configuration Guide
+<a id="member-server-configuration-guide"></a>
+## Member Server Configuration Guide { #member-server-configuration-guide }
 
 Load Balancer (DSR) forwards client requests to member servers with the virtual IP (VIP) as the destination. For the member server to properly receive and respond to these packets, the following settings are required on the server side:
 
 !!! danger "Caution"
     Configurations must be applied in the following order: Step 1 (kernel parameters) → Step 2 (VIP configuration). If the VIP is assigned before configuring the kernel parameters, an ARP conflict with the load balancer's VIP may occur, resulting in a network failure.
 
-### 1. Kernel Parameter Configuration (ARP Ignore/Announce)
+<a id="kernel-parameter-configuration-arp-ignoreannounce"></a>
+### 1. Kernel Parameter Configuration (ARP Ignore/Announce) { #kernel-parameter-configuration-arp-ignoreannounce }
 
 Before configuring the VIP on a network interface, the kernel must first be configured to prevent the server from responding to ARP requests for the VIP. If the VIP is assigned without this configuration, an ARP conflict with the load balancer's VIP may occur, resulting in a network failure.
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-parameter-value-definitions"></a>
 #### Parameter value definitions
 
 | Parameter | Value | Description |
@@ -145,6 +161,7 @@ Before configuring the VIP on a network interface, the kernel must first be conf
 | `arp_ignore` | `1` | Responds to ARP requests only when the requested IP is configured on the interface from which the request was received. (Prevents responses to ARP requests for the VIP configured on lo) |
 | `arp_announce` | `2` | When sending ARP packets externally, fixes the source IP to the address of the outgoing interface to prevent the VIP address from being exposed. |
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-real-time-application"></a>
 #### Real-time application
 
 ```bash
@@ -154,6 +171,7 @@ sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
 sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
 ```
 
+<a id="kernel-parameter-configuration-arp-ignoreannounce-permanent-application-etcsysctlconf"></a>
 #### Permanent application (/etc/sysctl.conf)
 
 Add the following content to the end of the file:
@@ -173,10 +191,12 @@ sudo sysctl -p
 !!! tip "Note"
     You can check if the value has been configured to `1` by using the command `sysctl net.ipv4.conf.all.arp_ignore` after applying it.
 
-### 2. VIP Configuration on Loopback Interface
+<a id="vip-configuration-on-loopback-interface"></a>
+### 2. VIP Configuration on Loopback Interface { #vip-configuration-on-loopback-interface }
 
 The VIP is assigned to the lo interface so that the server can recognize packets forwarded from the load balancer (packets with the VIP as the destination) as its own.
 
+<a id="vip-configuration-on-loopback-interface-temporary-configuration-deleted-on-reboot"></a>
 #### Temporary configuration (deleted on reboot)
 
 ```bash
@@ -184,6 +204,7 @@ The VIP is assigned to the lo interface so that the server can recognize packets
 sudo ip addr add <VIP>/32 dev lo
 ```
 
+<a id="vip-configuration-on-loopback-interface-permanent-configuration"></a>
 #### Permanent configuration
 
 ##### Ubuntu 18.04 and later (Netplan)
@@ -229,6 +250,7 @@ Apply the configuration:
 sudo ifup lo:0
 ```
 
+<a id="vip-configuration-on-loopback-interface-when-a-member-of-multiple-dsr-instances"></a>
 #### When a member of multiple DSR instances
 
 If a single instance is registered as a member of multiple Load Balancer (DSR) instances, all VIPs must be added to the lo interface, and each VIP must also be registered in the additional allowed addresses of the network interface.
@@ -252,8 +274,10 @@ network:
         - <VIP_2>/32
 ```
 
-### 3. Configuration Verification and Testing
+<a id="configuration-verification-and-testing"></a>
+### 3. Configuration Verification and Testing { #configuration-verification-and-testing }
 
+<a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### Verify IP configuration
 
 Verifies that the VIP has been correctly registered on the `/32`.
@@ -270,6 +294,7 @@ Example output:
     inet 192.168.1.100/32 scope host lo
 ```
 
+<a id="configuration-verification-and-testing-verify-arp-response"></a>
 #### Verify ARP response
 
 When an ARP request is sent to the VIP from an external server (another server on the same subnet), the MAC address of the member server should not respond. (Only the MAC of the load balancer should respond for it to be normal)
@@ -281,6 +306,7 @@ arping -c 3 <VIP>
 
 Verifies that the MAC address returned is the load balancer's MAC. If the member server's MAC is returned, the ARP configuration is incorrect.
 
+<a id="configuration-verification-and-testing-verify-kernel-parameter"></a>
 #### Verify kernel parameter
 
 ```bash
@@ -292,8 +318,10 @@ sysctl net.ipv4.conf.lo.arp_announce
 
 Each should output `1`, `2`, `1`, and `2`.
 
-### 4. Service Configuration
+<a id="service-configuration"></a>
+### 4. Service Configuration { #service-configuration }
 
+<a id="service-configuration-application-binding"></a>
 #### Application Binding
 
 The application (Nginx, Apache, Tomcat, etc.) must be configured so that the socket is listening on `0.0.0.0` (Any) or the VIP to receive packets.
@@ -307,6 +335,7 @@ The application (Nginx, Apache, Tomcat, etc.) must be configured so that the soc
 !!! danger "Caution"
 If the application is bound only to the server's actual interface IP (e.g., the IP of `eth0`), it cannot receive packets arriving at the VIP. The application must be bound to `0.0.0.0`, or the VIP address must be explicitly added as an additional binding.
 
+<a id="service-configuration-response-to-health-check"></a>
 #### Response to health check
 
 Load Balancer (DSR) periodically sends health check requests to the member servers. The server must respond normally to the status check to maintain `ACTIVE` status.
@@ -321,7 +350,8 @@ Load Balancer (DSR) periodically sends health check requests to the member serve
     * Health check requests are sent from a dedicated health check IP, not from the load balancer's VIP. Traffic from this IP must be allowed in the Security Group and the server's internal firewall. The dedicated health check IP is automatically assigned to the same subnet as the DSR.
     * If an internal firewall is configured on the server, ensure that the service port and health check port (including ICMP) are not blocked.
 
-### 5. Security Groups Configuration
+<a id="security-groups-configuration"></a>
+### 5. Security Groups Configuration { #security-groups-configuration }
 
 The Security Groups of member instances must allow service traffic and health check traffic from the DSR.
 
@@ -332,6 +362,7 @@ The Security Groups of member instances must allow service traffic and health ch
 
     In contrast, health check traffic is sent from a dedicated health check IP assigned to the same subnet as the DSR, and since the port of that IP belongs to the default SG, specifying the default SG as the remote allows the traffic.
 
+<a id="security-groups-configuration-method-1-easy-configuration"></a>
 #### Method 1: Easy configuration
 
 Since the DSR retains the client's source IP, both service traffic and status check traffic must be allowed separately.
@@ -344,6 +375,7 @@ Since the DSR retains the client's source IP, both service traffic and status ch
 !!! tip "Note"
     Since DSR does not perform source IP translation, the source IP of service traffic arriving at the member server is the client's original IP. If the client IP range is not specified, allow `0.0.0.0/0`. If the client range is confirmed, it can be restricted to the corresponding CIDR.
 
+<a id="security-groups-configuration-method-2-individual-rules-fine-grained-control"></a>
 #### Method 2: Individual rules (fine-grained control)
 
 Add individual rules when applying the principle of least privilege for security policy or when only specific ports need to be allowed.
@@ -376,12 +408,14 @@ When using ICMP health checks, add the following:
     * If the client IP range is limited to a specific CIDR (e.g., `10.0.0.0/8`), the principle of least privilege can be applied by specifying that CIDR instead of `0.0.0.0/0`.
     * In health check rules, the subnet CIDR (e.g., `192.168.1.0/24`) can be specified instead of the default Security Group. Since health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as the DSR, allowing by subnet CIDR is sufficient.
 
-### 6. Network Interface Security Settings Update
+<a id="network-interface-security-settings-update"></a>
+### 6. Network Interface Security Settings Update { #network-interface-security-settings-update }
 
 In the DSR method, the load balancer forwards packets to the member server while keeping the destination IP as the VIP. In the NHN Cloud network environment, packets whose source or destination is an IP other than the IP assigned to the instance are blocked by default for security purposes.
 
 Therefore, the VIP must be added as an additional allowed address on the network interface so that the member instance can receive packets destined for the VIP and respond with the VIP as the source.
 
+<a id="network-interface-security-settings-update-reason-for-the-settings"></a>
 #### Reason for the Settings
 
 ```
@@ -390,6 +424,7 @@ Therefore, the VIP must be added as an additional allowed address on the network
                                          The assigned port IP differs from the destination (VIP) → Packet dropped if VIP is not registered as an additional allowed address
 ```
 
+<a id="network-interface-security-settings-update-main-configuration-method"></a>
 #### Main configuration method
 
 Add the VIP of Load Balancer (DSR) to the additional allowed address section of the network interface (port) of the member server.
@@ -402,7 +437,8 @@ Add the VIP of Load Balancer (DSR) to the additional allowed address section of 
     For the procedure to configure additional allowed addresses, see the [console user guide](/Network/Network%20Interface/ko/console-guide/).
 
 
-## Floating IP Association
+<a id="floating-ip-association"></a>
+## Floating IP Association { #floating-ip-association }
 
 A Floating IP can be associated with the VIP of Load Balancer (DSR) to enable access from external networks.
 
@@ -414,7 +450,8 @@ A Floating IP can be associated with the VIP of Load Balancer (DSR) to enable ac
     Dissociating a Floating IP does not affect access to the VIP from the internal network.
 
 
-## Quota and Limitations
+<a id="quota-and-limitations"></a>
+## Quota and Limitations { #quota-and-limitations }
 
 The following quotas and limitations apply when using Load Balancer (DSR):
 
@@ -428,11 +465,13 @@ The following quotas and limitations apply when using Load Balancer (DSR):
     If you need to exceed the default quota, contact customer support.
 
 
-## Load Balancer (DSR) Monitoring
+<a id="load-balancer-dsr-monitoring"></a>
+## Load Balancer (DSR) Monitoring { #load-balancer-dsr-monitoring }
 
 The status of Load Balancer (DSR) and the health check results of member instances can be monitored in real time.
 
-### Status Information
+<a id="status-information"></a>
+### Status Information { #status-information }
 
 Load Balancer (DSR) status
 
@@ -457,7 +496,8 @@ Member Status
     Newly registered members start in the `INACTIVE` state. They automatically transition to `ACTIVE` after passing the health check.
 
 
-## Caution
+<a id="caution"></a>
+## Caution { #caution }
 
 Note the following when using Load Balancer (DSR).
 
