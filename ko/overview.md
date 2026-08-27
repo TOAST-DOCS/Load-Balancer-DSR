@@ -30,7 +30,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="how-dsr-works"></a>
 ### DSR 방식의 동작 원리 { #how-dsr-works }
 
-로드 밸런서(DSR)의 VIP(virtual IP)는 로드 밸런서가 속한 서브넷에서 할당되는 **사설 IP**이며, 콘솔에 표시되는 **VIP 주소** 필드의 값과 동일합니다. 인터넷에서 접근할 때 사용하는 공인 IP(Floating IP, 이하 FIP)와는 별개의 주소입니다.
+로드 밸런서(DSR)의 VIP(virtual IP)는 로드 밸런서가 속한 서브넷에서 할당되는 **사설 IP**로, 로드 밸런서(DSR) 생성 시 **VIP(Virtual IP)** 항목에 지정하는 주소이며 목록의 **IP 주소** 열에 표시됩니다. 인터넷에서 접근할 때 사용하는 공인 IP(Floating IP, 이하 FIP)와는 별개의 주소입니다.
 
 | 구분 | 주소 예시 | 역할 | 멤버 서버의 lo 및 추가 허용 주소 설정 |
 |------|----------|------|------|
@@ -297,7 +297,7 @@ network:
 |------|----------|----------|----------|
 | 1 | lo 인터페이스의 VIP | `ip addr show lo` | VIP(사설 IP)가 `/32`로 등록됨 |
 | 2 | 커널 파라미터 | `sysctl net.ipv4.conf.{all,lo}.arp_ignore`, `sysctl net.ipv4.conf.{all,lo}.arp_announce` | `arp_ignore=1`, `arp_announce=2` |
-| 3 | 추가 허용 주소 | 콘솔 **Network > Network Interface**의 **추가 허용 주소** | VIP(`<VIP>/32`)가 등록됨 |
+| 3 | 추가 허용 주소 | 콘솔 **Network > Network Interface**의 **추가 허용 주소** | VIP(`<VIP>/32`) 또는 VIP를 포함하는 대역이 등록됨 |
 | 4 | Security Groups | 멤버 인스턴스의 Security Groups 규칙 | 서비스 포트와 상태 확인 포트가 모두 허용됨(아래 [Security Groups 설정](#security-groups-configuration) 참고) |
 | 5 | 애플리케이션 바인딩 | `ss -ltnp` 등 | `0.0.0.0` 또는 VIP를 수신 대기 |
 
