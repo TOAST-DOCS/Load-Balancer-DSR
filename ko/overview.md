@@ -433,7 +433,7 @@ ICMP 상태 확인을 사용하는 경우 추가:
 !!! tip "알아두기"
     * 상태 확인 포트(`health_check_port`)를 서비스 포트와 다르게 설정한 경우, Security Groups에서 두 포트를 모두 허용해야 합니다.
     * 클라이언트 IP 대역이 특정 CIDR(예: `10.0.0.0/8`)로 한정되어 있다면, `0.0.0.0/0` 대신 해당 CIDR을 지정하여 최소 권한 원칙을 적용할 수 있습니다.
-    * 운영 환경에서는 default Security Group을 그대로 사용하기보다, 용도(web, app, db 등)별 전용 Security Group을 생성하여 필요한 규칙만 적용하기를 권장합니다. 상태 확인 규칙의 원격도 `default` SG 대신 DSR 서브넷 CIDR로 지정하면, 서브넷·용도 단위의 네트워크 경계를 유지할 수 있습니다.
+    * 운영 환경에서는 default Security Group을 그대로 사용하기보다, 용도(web, app, db 등)별 전용 Security Group을 생성하여 필요한 규칙만 적용하기를 권장합니다. 상태 확인 규칙의 원격도 `default` SG 대신 DSR 서브넷 CIDR로 지정하면 허용 범위를 해당 서브넷으로 좁힐 수 있습니다.
 
 <a id="network-interface-security-settings-update"></a>
 ### 6. 네트워크 인터페이스 보안 설정 변경 { #network-interface-security-settings-update }
