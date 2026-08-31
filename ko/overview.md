@@ -1,4 +1,11 @@
 <!-- pre-align:aligned sig=9be9447442b4 -->
+{% set ni_suffix = "-gov" if "gov" in build_flags
+    else "-ncgn" if "ncgn" in build_flags
+    else "-ngoic" if "ngoic" in build_flags
+    else "-ngovc" if "ngovc" in build_flags
+    else "-ngsc" if "ngsc" in build_flags
+    else "-ninc" if "ninc" in build_flags
+    else "" -%}
 
 <a id="network-load-balancer-dsr-overview"></a>
 ## Network > Load Balancer(DSR) > 개요 { #network-load-balancer-dsr-overview }
@@ -30,9 +37,21 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="how-dsr-works"></a>
 ### DSR 방식의 동작 원리 { #how-dsr-works }
 
-1. 클라이언트 요청: 클라이언트가 로드 밸런서의 VIP(virtual IP)로 요청을 전송합니다.
-2. 요청 분산: 로드 밸런서가 적절한 멤버 인스턴스를 선택하여 요청을 전달합니다.
-3. 응답 직접 전송: 멤버 인스턴스가 로드 밸런서를 거치지 않고 클라이언트에게 직접 응답을 전송합니다.
+로드 밸런서(DSR)의 VIP(Virtual IP)는 로드 밸런서가 속한 서브넷에서 할당되는 **사설 IP**로, 로드 밸런서(DSR) 생성 시 **VIP(Virtual IP)** 항목에 지정하는 주소이며 목록의 **IP 주소** 열에 표시됩니다. 인터넷에서 접근할 때 사용하는 Floating IP와는 별개의 주소입니다.
+
+| 구분 | 주소 예시 | 역할 | 멤버 서버의 lo 및 추가 허용 주소 설정 |
+|------|----------|------|------|
+| VIP(사설 IP) | `192.168.1.100` | 로드 밸런서와 멤버 인스턴스로 전달되는 트래픽의 실제 목적지 | 필요 |
+| Floating IP | `133.186.0.31` | 인터넷에서 접근하는 진입점 | 불필요 |
+
+트래픽 처리 순서는 다음과 같습니다.
+
+1. 클라이언트 요청: 클라이언트가 로드 밸런서의 VIP(사설 IP)로 요청을 전송합니다. 인터넷에서 접근하는 경우에는 VIP에 연결된 Floating IP로 요청을 보내며, 이때 요청의 목적지는 VIP로 변환되어 로드 밸런서에 전달됩니다.
+2. 요청 분산: 로드 밸런서가 적절한 멤버 인스턴스를 선택하여, 목적지 IP를 VIP로 유지한 채 요청을 전달합니다.
+3. 응답 직접 전송: 멤버 인스턴스가 VIP를 출발지로 하여 로드 밸런서를 거치지 않고 클라이언트에 직접 응답을 전송합니다. Floating IP로 들어온 요청의 응답은 출발지가 다시 Floating IP로 변환되어 클라이언트에 도달합니다.
+
+!!! danger "주의"
+    멤버 서버의 lo 인터페이스와 네트워크 인터페이스의 추가 허용 주소에 등록해야 하는 주소는 VIP(사설 IP)입니다. Floating IP를 등록하면 트래픽이 정상적으로 처리되지 않습니다.
 
 !!! tip "알아두기"
     DSR 방식은 응답 트래픽이 로드 밸런서를 거치지 않으므로 다음과 같은 장점이 있습니다:
@@ -81,12 +100,12 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 
 - ICMP: ICMP Echo Request/Reply를 이용한 기본적인 연결성 확인 방식입니다. 인스턴스의 네트워크 연결 상태를 빠르게 확인할 수 있습니다. 요청은 멤버 인스턴스의 실제 IP를 목적지로 발송됩니다.
 
-- TCP: 지정된 포트로 TCP 연결을 시도하여 연결 가능 여부를 확인합니다. 특정 서비스 포트가 정상적으로 동작하는지 확인할 수 있습니다. 요청은 로드 밸런서(DSR)의 VIP를 목적지로 발송됩니다.
+- TCP: 지정된 포트로 TCP 연결을 시도하여 연결 가능 여부를 확인합니다. 특정 서비스 포트가 정상적으로 동작하는지 확인할 수 있습니다. 요청은 로드 밸런서(DSR)의 VIP(사설 IP)를 목적지로 발송됩니다.
 
-- HTTP: 지정된 경로로 HTTP 요청을 전송하여 응답 코드를 확인합니다. 웹 애플리케이션의 실제 서비스 상태를 보다 정확하게 확인할 수 있습니다. 요청은 로드 밸런서(DSR)의 VIP를 목적지로 발송됩니다.
+- HTTP: 지정된 경로로 HTTP 요청을 전송하여 응답 코드를 확인합니다. 웹 애플리케이션의 실제 서비스 상태를 보다 정확하게 확인할 수 있습니다. 요청은 로드 밸런서(DSR)의 VIP(사설 IP)를 목적지로 발송됩니다.
 
 !!! tip "알아두기"
-    TCP/HTTP 상태 확인은 DSR VIP를 목적지로 요청하므로, 멤버 서버의 lo 인터페이스에 VIP가 설정되어 있지 않으면 해당 패킷이 수신·처리되지 못해 상태 확인이 실패하고 멤버가 `INACTIVE`로 판정됩니다. 이는 서버 측 VIP 설정 누락을 조기에 탐지하기 위한 동작입니다. ICMP 상태 확인은 멤버의 실제 IP로 요청하므로 VIP 설정과 무관하게 연결성만 확인합니다.
+    TCP/HTTP 상태 확인 패킷의 목적지는 Floating IP가 아닌 VIP이며, 이는 정상 동작입니다. TCP/HTTP 상태 확인은 DSR VIP를 목적지로 요청하므로, 멤버 서버의 lo 인터페이스에 VIP가 설정되어 있지 않으면 해당 패킷이 수신·처리되지 못해 상태 확인이 실패하고 멤버가 `INACTIVE`로 판정됩니다. 이는 서버 측 VIP 설정 누락을 조기에 탐지하기 위한 동작입니다. ICMP 상태 확인은 멤버의 실제 IP로 요청하므로 VIP 설정과 무관하게 연결성만 확인합니다.
 
 <a id="health-check-settings"></a>
 ### 상태 확인 설정 { #health-check-settings }
@@ -110,15 +129,17 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="create-load-balancer-dsr"></a>
 ## 로드 밸런서(DSR) 생성 { #create-load-balancer-dsr }
 
-로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview/#_2)의 [서브넷](/Network/VPC/ko/overview/#_2) 내에서 생성됩니다.
+로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview{% if "gov" in build_flags %}-gov{% endif %}/#glossary)의 [서브넷](/Network/VPC/ko/overview{% if "gov" in build_flags %}-gov{% endif %}/#glossary) 내에서 생성됩니다.
 
 <a id="assign-vip-address"></a>
 ### VIP 주소 할당 { #assign-vip-address }
 
-로드 밸런서(DSR) 생성 시 VIP(virtual IP) 주소를 다음 두 가지 방식으로 할당할 수 있습니다.
+VIP(Virtual IP)는 로드 밸런서(DSR)가 속한 서브넷에서 할당되는 사설 IP입니다. 로드 밸런서(DSR)를 생성할 때 다음 두 가지 방식으로 VIP를 할당할 수 있습니다.
 
 - 자동 할당: 서브넷의 가용 IP 중 하나를 자동으로 할당받아 VIP로 사용합니다.
 - 직접 지정: 서브넷의 CIDR 범위 내에서 원하는 IP를 지정하여 VIP로 사용합니다.
+
+인터넷에서 접근해야 하는 경우에는 이 VIP에 Floating IP를 연결하세요. 자세한 내용은 [Floating IP 연결](#floating-ip-association)을 참고하세요.
 
 !!! danger "주의"
     직접 지정한 VIP 주소가 서브넷의 CIDR 범위에 속하지 않으면 생성이 실패합니다. 반드시 해당 서브넷의 IP 범위 내에서 지정하세요.
@@ -143,7 +164,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="member-server-configuration-guide"></a>
 ## 멤버 서버 설정 가이드 { #member-server-configuration-guide }
 
-로드 밸런서(DSR)는 클라이언트의 요청을 멤버 서버에 VIP(virtual IP)를 목적지로 하여 전달합니다. 멤버 서버가 이 패킷을 정상적으로 수신하고 응답하려면, 서버 측에서 아래의 설정이 필요합니다.
+로드 밸런서(DSR)는 클라이언트의 요청을 VIP(Virtual IP)를 목적지로 하여 멤버 서버에 전달합니다. 멤버 서버가 이 패킷을 정상적으로 수신하고 응답하려면, 서버 측에서 아래의 설정이 필요합니다. 아래 설정에 사용하는 `<VIP>`는 모두 이 사설 IP입니다.
 
 !!! danger "주의"
     반드시 1단계(커널 파라미터) → 2단계(VIP 설정) 순서로 설정해야 합니다. 커널 파라미터를 설정하지 않고 VIP를 먼저 할당하면 로드 밸런서의 VIP와 ARP 충돌이 발생하여 네트워크 장애가 일어날 수 있습니다.
@@ -277,6 +298,16 @@ network:
 <a id="configuration-verification-and-testing"></a>
 ### 3. 설정 확인 및 테스트 { #configuration-verification-and-testing }
 
+멤버가 `INACTIVE` 상태이거나 트래픽을 수신하지 못하는 경우, 멤버 인스턴스마다 아래 항목을 순서대로 점검합니다. 설정 누락 항목은 멤버마다 다를 수 있습니다. 아래 순서는 설정 순서가 아니라 진단 순서입니다. 신규로 설정할 때는 커널 파라미터를 먼저 적용해야 합니다.
+
+| 순서 | 점검 항목 | 확인 방법 | 정상 상태 |
+|------|----------|----------|----------|
+| 1 | lo 인터페이스의 VIP | `ip addr show lo` | VIP(사설 IP)가 `/32`로 등록됨 |
+| 2 | 커널 파라미터 | `sysctl net.ipv4.conf.{all,lo}.arp_ignore`, `sysctl net.ipv4.conf.{all,lo}.arp_announce` | `arp_ignore=1`, `arp_announce=2` |
+| 3 | 추가 허용 주소 | 콘솔 **Network > Network Interface**의 **추가 허용 주소** | `<VIP>/32` 또는 VIP를 포함하는 대역이 등록됨 |
+| 4 | Security Groups | 멤버 인스턴스의 Security Groups 규칙 | 서비스 포트와 상태 확인 포트가 모두 허용됨(아래 [Security Groups 설정](#security-groups-configuration) 참고) |
+| 5 | 애플리케이션 바인딩 | `ss -ltnp` | `0.0.0.0` 또는 VIP를 수신 대기 |
+
 <a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### IP 설정 확인
 
@@ -358,9 +389,9 @@ sysctl net.ipv4.conf.lo.arp_announce
 !!! tip "알아두기"
     로드 밸런서(DSR)의 VIP와 상태 확인 전용 IP에 해당하는 포트에는 default Security Group이 연결되어 있습니다. 다만, DSR 포트 자체에는 Security Groups의 필터링(flow)이 적용되지 않습니다.
 
-    멤버 인스턴스의 포트에는 Security Groups 필터링이 정상 적용됩니다. 이때 DSR은 패킷의 소스 IP를 변환하지 않으므로(No SNAT), 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 따라서 서비스 트래픽에 대해서는 `default` SG를 원격으로 지정하는 것만으로는 허용되지 않으며, 클라이언트 IP 대역 또는 ANY(`0.0.0.0/0`)를 원격으로 지정해야 합니다.
+    멤버 인스턴스의 포트에는 Security Groups 필터링이 정상 적용됩니다. 이때 DSR은 패킷의 소스 IP를 변환하지 않으므로(No SNAT), 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 따라서 서비스 트래픽에는 클라이언트 IP 대역 또는 ANY(`0.0.0.0/0`)를 원격으로 지정해야 합니다.
 
-    반면, 상태 확인 트래픽은 DSR과 동일한 서브넷에 할당된 상태 확인 전용 IP에서 발송되며, 해당 IP의 포트가 default SG에 속해 있으므로 `default` SG를 원격으로 지정하면 허용됩니다.
+    상태 확인 트래픽은 DSR과 동일한 서브넷에 할당된 상태 확인 전용 IP에서 발송되므로, 해당 서브넷의 CIDR을 원격으로 지정하면 허용됩니다. 상태 확인 전용 IP의 포트는 default Security Group에도 속해 있어 `default` SG를 원격으로 지정하는 방법으로도 허용할 수 있습니다.
 
 <a id="security-groups-configuration-method-1-easy-configuration"></a>
 #### 방법 1: 간편 설정
@@ -370,43 +401,46 @@ DSR은 클라이언트의 소스 IP를 그대로 유지하므로, 서비스 트�
 | 방향 | IP 프로토콜 | 포트 범위 | 원격 | 설명 |
 |------|-----------|----------|------|------|
 | 수신 | TCP 또는 UDP | 서비스 포트(예: 80) | 0.0.0.0/0 | 클라이언트로부터의 서비스 트래픽 허용(서비스 프로토콜에 맞게 지정) |
-| 수신 | 임의 | - | default | 상태 확인 트래픽 허용(상태 확인 전용 IP의 포트가 default SG에 속함) |
+| 수신 | 임의 | - | DSR 서브넷 CIDR(예: `192.168.1.0/24`) | 상태 확인 트래픽 허용(상태 확인 전용 IP가 DSR과 동일한 서브넷에 할당됨) |
 
 !!! tip "알아두기"
     DSR은 패킷의 소스 IP를 변환하지 않으므로, 멤버 서버에 도착하는 서비스 트래픽의 소스 IP는 클라이언트의 원본 IP입니다. 클라이언트 IP 대역이 특정되지 않는 경우 `0.0.0.0/0`으로 허용해야 합니다. 클라이언트 대역이 확정된 경우 해당 CIDR로 제한할 수 있습니다.
+
+!!! danger "주의"
+    상태 확인 트래픽의 원격으로 `default` Security Group을 지정할 수도 있으나, 이 경우 default SG에 속한 모든 리소스가 해당 포트로 접근할 수 있습니다. 인스턴스 생성 시 Security Groups를 지정하지 않으면 default SG가 적용되므로, 서브넷이나 용도(web, app, db 등)로 구분한 네트워크 경계가 Security Group 수준에서 느슨해집니다. `default` SG 지정은 초기 테스트·검증 용도로만 사용하고, 운영 환경에서는 DSR 서브넷 CIDR을 지정하는 방식을 권장합니다.
 
 <a id="security-groups-configuration-method-2-individual-rules-fine-grained-control"></a>
 #### 방법 2: 개별 규칙으로 허용(세밀한 제어)
 
 보안 정책상 최소 권한 원칙을 적용하거나, 특정 포트만 허용해야 하는 경우 개별 규칙을 추가합니다.
 
-| 용도 | 프로토콜 | 포트 | 원격 | 비고 |
+| 용도 | 프로토콜 | 포트 | 원격(권장) | 비고 |
 |------|---------|------|------|------|
 | 서비스 트래픽(TCP) | TCP | 서비스 포트(예: 80, 443) | 클라이언트 IP 대역 또는 0.0.0.0/0 | DSR은 SNAT하지 않으므로 소스 IP가 클라이언트 원본 IP |
 | 서비스 트래픽(UDP) | UDP | 서비스 포트(예: 53, 514) | 클라이언트 IP 대역 또는 0.0.0.0/0 | UDP 프로토콜 서비스 사용 시 |
-| TCP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR 또는 default SG | 상태 확인 전용 IP에서 발송 |
-| ICMP 상태 확인 | ICMP | - | DSR 서브넷 CIDR 또는 default SG | ICMP 타입 사용 시 |
-| HTTP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR 또는 default SG | HTTP 타입 사용 시 |
+| TCP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR | 상태 확인 전용 IP가 DSR과 동일한 서브넷에 할당됨 |
+| ICMP 상태 확인 | ICMP | - | DSR 서브넷 CIDR | ICMP 타입 사용 시 |
+| HTTP 상태 확인 | TCP | `health_check_port` | DSR 서브넷 CIDR | HTTP 타입 사용 시 |
 
 ##### 콘솔에서 규칙 추가 예시
 
-서비스 포트 80, TCP 상태 확인 포트 80인 경우:
+서비스 포트와 TCP 상태 확인 포트가 모두 80이고, DSR 서브넷이 `192.168.1.0/24`인 경우:
 
 | 방향 | IP 프로토콜 | 포트 범위 | 원격 | 설명 |
 |------|-----------|----------|------|------|
 | 수신 | TCP | 80 | 0.0.0.0/0 | 클라이언트로부터의 서비스 트래픽 |
-| 수신 | TCP | 80 | default | 상태 확인 트래픽 |
+| 수신 | TCP | 80 | 192.168.1.0/24 | 상태 확인 트래픽 |
 
 ICMP 상태 확인을 사용하는 경우 추가:
 
 | 방향 | IP 프로토콜 | 포트 범위 | 원격 | 설명 |
 |------|-----------|----------|------|------|
-| 수신 | ICMP | - | default | ICMP 상태 확인 |
+| 수신 | ICMP | - | 192.168.1.0/24 | ICMP 상태 확인 |
 
 !!! tip "알아두기"
     * 상태 확인 포트(`health_check_port`)를 서비스 포트와 다르게 설정한 경우, Security Groups에서 두 포트를 모두 허용해야 합니다.
     * 클라이언트 IP 대역이 특정 CIDR(예: `10.0.0.0/8`)로 한정되어 있다면, `0.0.0.0/0` 대신 해당 CIDR을 지정하여 최소 권한 원칙을 적용할 수 있습니다.
-    * 상태 확인 규칙에서 default Security Group 대신 서브넷 CIDR(예: `192.168.1.0/24`)로 지정할 수도 있습니다. 상태 확인 요청은 DSR과 동일한 서브넷에 자동 할당된 상태 확인 전용 IP에서 발송되므로, 서브넷 CIDR 단위로 허용하면 됩니다.
+    * 운영 환경에서는 default Security Group을 그대로 사용하기보다, 용도(web, app, db 등)별 전용 Security Group을 생성하여 필요한 규칙만 적용하기를 권장합니다. 상태 확인 규칙의 원격도 `default` SG 대신 DSR 서브넷 CIDR로 지정하면 허용 범위를 해당 서브넷으로 좁힐 수 있습니다.
 
 <a id="network-interface-security-settings-update"></a>
 ### 6. 네트워크 인터페이스 보안 설정 변경 { #network-interface-security-settings-update }
@@ -434,7 +468,7 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
 * 하나의 인스턴스가 여러 로드 밸런서(DSR)의 멤버인 경우, 각 VIP를 모두 추가 허용 주소에 추가해야 합니다.
 
 !!! tip "알아두기"
-    추가 허용 주소 설정 절차는 [콘솔 사용 가이드](/Network/Network%20Interface/ko/console-guide/)를 참고하세요.
+    추가 허용 주소 설정 절차는 [콘솔 사용 가이드](/Network/Network%20Interface/ko/console-guide$[ ni_suffix ]$/)를 참고하세요.
 
 
 <a id="floating-ip-association"></a>
@@ -445,6 +479,8 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
 - Floating IP를 연결하면 인터넷에서 로드 밸런서(DSR)로 트래픽을 전달할 수 있습니다.
 - Floating IP를 분리하면 외부 접근이 차단되고 내부 네트워크에서만 접근 가능합니다.
 - Floating IP 연결/분리 시 자동으로 로드 밸런서에 반영됩니다.
+
+Floating IP로 들어온 요청은 목적지가 VIP로 변환된 뒤 로드 밸런서에 전달됩니다. 응답은 출발지가 다시 Floating IP로 변환됩니다. 따라서 멤버 서버의 lo 인터페이스와 네트워크 인터페이스의 추가 허용 주소에는 Floating IP가 아닌 VIP를 등록해야 합니다.
 
 !!! tip "알아두기"
     Floating IP를 분리해도 내부 네트워크에서 VIP를 통한 접근은 영향을 받지 않습니다.
