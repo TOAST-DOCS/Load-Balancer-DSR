@@ -165,7 +165,7 @@ Load Balancer (DSR) distributes incoming traffic by registering instances as mem
 <a id="member-server-configuration-guide"></a>
 ## Member Server Configuration Guide { #member-server-configuration-guide }
 
-Load Balancer (DSR) forwards client requests to member servers with the virtual IP (VIP) as the destination. For the member server to properly receive and respond to these packets, the following settings are required on the server side. All `<VIP>` values used in the settings below refer to this private IP.
+Load Balancer (DSR) forwards client requests to member servers with the VIP (Virtual IP) as the destination. For the member server to properly receive and respond to these packets, the following settings are required on the server side. All `<VIP>` values used in the settings below refer to this private IP.
 
 !!! danger "Caution"
     Configurations must be applied in the following order: Step 1 (kernel parameters) → Step 2 (VIP configuration). If the VIP is assigned before configuring the kernel parameters, an ARP conflict with the load balancer's VIP may occur, resulting in a network failure.
@@ -479,7 +479,7 @@ A Floating IP can be associated with the VIP of Load Balancer (DSR) to enable ac
 - Dissociating a Floating IP blocks external access, making the load balancer accessible only from the internal network.
 - Associating or dissociating a Floating IP is automatically reflected in the load balancer.
 
-Requests that arrive via a floating IP are forwarded to the load balancer after the destination is converted to the VIP. The response has its source converted back to the floating IP. Therefore, you must register the VIP — not the floating IP — in the lo interface of the member server and in the additional allowed addresses of the network interface.
+Requests that arrive via a Floating IP are forwarded to the load balancer after the destination is converted to the VIP. The response has its source converted back to the Floating IP. Therefore, you must register the VIP — not the Floating IP — in the lo interface of the member server and in the additional allowed addresses of the network interface.
 
 !!! tip "Note"
     Dissociating a Floating IP does not affect access to the VIP from the internal network.
