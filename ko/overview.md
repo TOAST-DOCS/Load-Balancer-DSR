@@ -30,7 +30,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="how-dsr-works"></a>
 ### DSR 방식의 동작 원리 { #how-dsr-works }
 
-로드 밸런서(DSR)의 VIP(virtual IP)는 로드 밸런서가 속한 서브넷에서 할당되는 **사설 IP**로, 로드 밸런서(DSR) 생성 시 **VIP(Virtual IP)** 항목에 지정하는 주소이며 목록의 **IP 주소** 열에 표시됩니다. 인터넷에서 접근할 때 사용하는 Floating IP와는 별개의 주소입니다.
+로드 밸런서(DSR)의 VIP(Virtual IP)는 로드 밸런서가 속한 서브넷에서 할당되는 **사설 IP**로, 로드 밸런서(DSR) 생성 시 **VIP(Virtual IP)** 항목에 지정하는 주소이며 목록의 **IP 주소** 열에 표시됩니다. 인터넷에서 접근할 때 사용하는 Floating IP와는 별개의 주소입니다.
 
 | 구분 | 주소 예시 | 역할 | 멤버 서버의 lo 및 추가 허용 주소 설정 |
 |------|----------|------|------|
@@ -98,7 +98,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 - HTTP: 지정된 경로로 HTTP 요청을 전송하여 응답 코드를 확인합니다. 웹 애플리케이션의 실제 서비스 상태를 보다 정확하게 확인할 수 있습니다. 요청은 로드 밸런서(DSR)의 VIP(사설 IP)를 목적지로 발송됩니다.
 
 !!! tip "알아두기"
-    TCP/HTTP 상태 확인 패킷의 목적지는 Floating IP가 아닌 VIP입니다. 이는 정상 동작입니다. TCP/HTTP 상태 확인은 DSR VIP를 목적지로 요청하므로, 멤버 서버의 lo 인터페이스에 VIP가 설정되어 있지 않으면 해당 패킷이 수신·처리되지 못해 상태 확인이 실패하고 멤버가 `INACTIVE`로 판정됩니다. 이는 서버 측 VIP 설정 누락을 조기에 탐지하기 위한 동작입니다. ICMP 상태 확인은 멤버의 실제 IP로 요청하므로 VIP 설정과 무관하게 연결성만 확인합니다.
+    TCP/HTTP 상태 확인 패킷의 목적지는 Floating IP가 아닌 VIP이며, 이는 정상 동작입니다. TCP/HTTP 상태 확인은 DSR VIP를 목적지로 요청하므로, 멤버 서버의 lo 인터페이스에 VIP가 설정되어 있지 않으면 해당 패킷이 수신·처리되지 못해 상태 확인이 실패하고 멤버가 `INACTIVE`로 판정됩니다. 이는 서버 측 VIP 설정 누락을 조기에 탐지하기 위한 동작입니다. ICMP 상태 확인은 멤버의 실제 IP로 요청하므로 VIP 설정과 무관하게 연결성만 확인합니다.
 
 <a id="health-check-settings"></a>
 ### 상태 확인 설정 { #health-check-settings }
@@ -127,12 +127,12 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="assign-vip-address"></a>
 ### VIP 주소 할당 { #assign-vip-address }
 
-VIP(virtual IP)는 로드 밸런서(DSR)가 속한 서브넷에서 할당되는 사설 IP입니다. 로드 밸런서(DSR)를 생성할 때 다음 두 가지 방식으로 VIP를 할당할 수 있습니다.
+VIP(Virtual IP)는 로드 밸런서(DSR)가 속한 서브넷에서 할당되는 사설 IP입니다. 로드 밸런서(DSR)를 생성할 때 다음 두 가지 방식으로 VIP를 할당할 수 있습니다.
 
 - 자동 할당: 서브넷의 가용 IP 중 하나를 자동으로 할당받아 VIP로 사용합니다.
 - 직접 지정: 서브넷의 CIDR 범위 내에서 원하는 IP를 지정하여 VIP로 사용합니다.
 
-인터넷에서 접근해야 하는 경우에는 이 VIP에 Floating IP를 연결합니다. 자세한 내용은 [Floating IP 연결](#floating-ip-association)을 참고하세요.
+인터넷에서 접근해야 하는 경우에는 이 VIP에 Floating IP를 연결하세요. 자세한 내용은 [Floating IP 연결](#floating-ip-association)을 참고하세요.
 
 !!! danger "주의"
     직접 지정한 VIP 주소가 서브넷의 CIDR 범위에 속하지 않으면 생성이 실패합니다. 반드시 해당 서브넷의 IP 범위 내에서 지정하세요.
@@ -157,7 +157,7 @@ VIP(virtual IP)는 로드 밸런서(DSR)가 속한 서브넷에서 할당되는 
 <a id="member-server-configuration-guide"></a>
 ## 멤버 서버 설정 가이드 { #member-server-configuration-guide }
 
-로드 밸런서(DSR)는 클라이언트의 요청을 멤버 서버에 VIP(virtual IP)를 목적지로 하여 전달합니다. 멤버 서버가 이 패킷을 정상적으로 수신하고 응답하려면, 서버 측에서 아래의 설정이 필요합니다. 아래 설정에 사용하는 `<VIP>`는 모두 이 사설 IP입니다.
+로드 밸런서(DSR)는 클라이언트의 요청을 VIP(Virtual IP)를 목적지로 하여 멤버 서버에 전달합니다. 멤버 서버가 이 패킷을 정상적으로 수신하고 응답하려면, 서버 측에서 아래의 설정이 필요합니다. 아래 설정에 사용하는 `<VIP>`는 모두 이 사설 IP입니다.
 
 !!! danger "주의"
     반드시 1단계(커널 파라미터) → 2단계(VIP 설정) 순서로 설정해야 합니다. 커널 파라미터를 설정하지 않고 VIP를 먼저 할당하면 로드 밸런서의 VIP와 ARP 충돌이 발생하여 네트워크 장애가 일어날 수 있습니다.
