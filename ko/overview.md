@@ -122,7 +122,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="create-load-balancer-dsr"></a>
 ## 로드 밸런서(DSR) 생성 { #create-load-balancer-dsr }
 
-로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview/#_2)의 [서브넷](/Network/VPC/ko/overview/#_2) 내에서 생성됩니다.
+로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview/#glossary)의 [서브넷](/Network/VPC/ko/overview/#glossary) 내에서 생성됩니다.
 
 <a id="assign-vip-address"></a>
 ### VIP 주소 할당 { #assign-vip-address }
