@@ -1,4 +1,11 @@
 <!-- pre-align:aligned sig=9be9447442b4 -->
+{% set ni_suffix = "-gov" if "gov" in build_flags
+    else "-ncgn" if "ncgn" in build_flags
+    else "-ngoic" if "ngoic" in build_flags
+    else "-ngovc" if "ngovc" in build_flags
+    else "-ngsc" if "ngsc" in build_flags
+    else "-ninc" if "ninc" in build_flags
+    else "" -%}
 
 <a id="network-load-balancer-dsr-overview"></a>
 ## Network > Load Balancer(DSR) > 개요 { #network-load-balancer-dsr-overview }
@@ -122,7 +129,7 @@ NHN Cloud는 DSR(direct server return) 방식의 로드 밸런서를 제공합�
 <a id="create-load-balancer-dsr"></a>
 ## 로드 밸런서(DSR) 생성 { #create-load-balancer-dsr }
 
-로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview/#glossary)의 [서브넷](/Network/VPC/ko/overview/#glossary) 내에서 생성됩니다.
+로드 밸런서(DSR)는 [VPC](/Network/VPC/ko/overview{% if "gov" in build_flags %}-gov{% endif %}/#glossary)의 [서브넷](/Network/VPC/ko/overview{% if "gov" in build_flags %}-gov{% endif %}/#glossary) 내에서 생성됩니다.
 
 <a id="assign-vip-address"></a>
 ### VIP 주소 할당 { #assign-vip-address }
@@ -461,7 +468,7 @@ DSR 방식에서는 로드 밸런서가 패킷의 목적지 IP를 VIP로 유지�
 * 하나의 인스턴스가 여러 로드 밸런서(DSR)의 멤버인 경우, 각 VIP를 모두 추가 허용 주소에 추가해야 합니다.
 
 !!! tip "알아두기"
-    추가 허용 주소 설정 절차는 [콘솔 사용 가이드](/Network/Network%20Interface/ko/console-guide/)를 참고하세요.
+    추가 허용 주소 설정 절차는 [콘솔 사용 가이드](/Network/Network%20Interface/ko/console-guide$[ ni_suffix ]$/)를 참고하세요.
 
 
 <a id="floating-ip-association"></a>
