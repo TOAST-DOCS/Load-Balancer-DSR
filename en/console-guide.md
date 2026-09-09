@@ -85,7 +85,7 @@ Specify the member instances to register when creating Load Balancer (DSR). Memb
 
     The address registered in the lo interface and additional allowed addresses is the VIP (private IP), not the floating IP associated with Load Balancer (DSR).
 
-    For detailed instructions, see the Member server configuration guide in [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/en/overview/).
+    For detailed instructions, see the Member server configuration guide in [Load Balancer (DSR) Overview](./overview/).
 
 !!! tip "Note"
     The initial status of a newly registered member is `INACTIVE`. Once the health check passes, the status automatically transitions to `ACTIVE` and the member begins receiving traffic.
@@ -209,7 +209,7 @@ Click **+ Add Member** button on the **Member** tab to display the add member mo
     * By default, up to 30 members can be registered per Load Balancer (DSR).
 
 !!! tip "Note"
-    To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/ko/overview/).
+    To properly receive traffic after registering a member, add the VIP as an additional allowed address on the network interface, and configure the ARP kernel parameters, add the VIP to the lo interface, and set up Security Groups rules within the member server. For detailed instructions, see the Member server configuration guide in the [Load Balancer (DSR) Overview](./overview/).
 
 <a id='deactivate-dsr-members'></a>
 ### Deactivate Members { #deactivate-dsr-members }
@@ -258,7 +258,7 @@ Click **Confirm** after completing the settings to apply the changes
     The delay must be greater than or equal to the timeout. If the timeout is greater than the delay, health checks may not function correctly.
 
 !!! tip "Note"
-    Health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as Load Balancer (DSR). The Security Groups of member instances must allow this traffic by specifying the subnet CIDR as the remote for health checks to function correctly. For more information, see the Security Groups configuration section in the [Load Balancer (DSR) Overview](/Network/Load%20Balancer(DSR)/en/overview/).
+    Health check requests are sent from a dedicated health check IP automatically assigned to the same subnet as Load Balancer (DSR). The Security Groups of member instances must allow this traffic by specifying the subnet CIDR as the remote for health checks to function correctly. For more information, see the Security Groups configuration section in the [Load Balancer (DSR) Overview](./overview/).
 
 <a id='dsr-quota'></a>
 ## Quota and Limitations { #dsr-quota }
