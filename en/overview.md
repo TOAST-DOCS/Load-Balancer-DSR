@@ -364,7 +364,7 @@ The application (Nginx, Apache, Tomcat, etc.) must be configured so that the soc
 | `<Server IP>:Port` | Only receive from the server's own IP — **VIP traffic cannot be received** | `listen 10.0.0.5:80;` |
 
 !!! danger "Caution"
-If the application is bound only to the server's actual interface IP (e.g., the IP of `eth0`), it cannot receive packets arriving at the VIP. The application must be bound to `0.0.0.0`, or the VIP address must be explicitly added as an additional binding.
+    If the application is bound only to the server's actual interface IP (e.g., the IP of `eth0`), it cannot receive packets arriving at the VIP. The application must be bound to `0.0.0.0`, or the VIP address must be explicitly added as an additional binding.
 
 <a id="service-configuration-response-to-health-check"></a>
 #### Response to health check
