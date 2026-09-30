@@ -45,6 +45,7 @@ The VIP (Virtual IP) of Load Balancer (DSR) is a **private IP** assigned from th
 |------|----------|------|------|
 | VIP (Private IP) | `192.168.1.100` | The actual destination of traffic forwarded to the load balancer and member instances | Required |
 | Floating IP | `133.186.0.31` | Entry point for internet access | Not required |
+
 The traffic processing order is as follows.
 
 1. Client request: The client sends a request to the VIP (private IP) of the load balancer. When accessing from the internet, the request is sent to the Floating IP associated with the VIP, and the destination of the request is translated to the VIP and forwarded to the load balancer.
@@ -308,6 +309,7 @@ If a member is in the `INACTIVE` status or is not receiving traffic, check the f
 | 3 | Additional allowed addresses | **Additional Allowed Addresses** in the console **Network > Network Interface** | `<VIP>/32` or a range that includes the VIP is registered |
 | 4 | Security Groups | Security Groups rules of member instances | Both the service port and the health check port are allowed (see [Security Groups Configuration](#security-groups-configuration) below) |
 | 5 | Application Binding | `ss -ltnp` | Listening on `0.0.0.0` or VIP |
+
 <a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### Verify IP configuration
 
