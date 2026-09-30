@@ -45,6 +45,7 @@ NHN Cloudは、DSR(direct server return)方式のロードバランサーを提�
 |------|----------|------|------|
 | VIP(プライベートIP) | `192.168.1.100` | ロードバランサーとメンバーインスタンスに転送されるトラフィックの実際の宛先 | 必要 |
 | Floating IP | `133.186.0.31` | インターネットからアクセスするエントリポイント | 不要 |
+
 トラフィックの処理順序は次のとおりです。
 
 1. クライアントリクエスト: クライアントがロードバランサーのVIP（プライベートIP）にリクエストを送信します。インターネットからアクセスする場合は、VIPに紐付けられたFloating IPにリクエストを送り、このときリクエストの宛先はVIPに変換されてロードバランサーに届きます。
@@ -308,6 +309,7 @@ network:
 | 3 | 追加許可アドレス | コンソール **Network > Network Interface** の **[追加許可アドレス]** | `<VIP>/32` またはVIPを含む帯域が登録されている |
 | 4 | Security Groups | メンバーインスタンスのSecurity Groupsルール | サービスポートとヘルスチェックポートがいずれも許可されています（以下の[Security Groups設定](#security-groups-configuration)を参照） |
 | 5 | アプリケーションバインド | `ss -ltnp` | `0.0.0.0` またはVIPをリッスン |
+
 <a id="configuration-verification-and-testing-verify-ip-configuration"></a>
 #### IP設定の確認
 
