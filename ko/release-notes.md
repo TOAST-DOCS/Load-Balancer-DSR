@@ -1,3 +1,5 @@
+<!-- pre-align:aligned sig=b4296665772e -->
+
 ## Network > Load Balancer(DSR) > 릴리스 노트
 
 ### 2026. 05. 27.
